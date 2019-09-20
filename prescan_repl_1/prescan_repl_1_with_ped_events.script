@@ -72,8 +72,8 @@ editor/cam.SetLocalPosition	-22.2427826 -123.9344254 7.0029283
 editor/cam.SetLocalRotation	67.6127014 -3.6081104 -5.3816042
 #editor/cam.SetLocalRotationAngles	67.6799698 0.0000011 -6.1093149
 editor/cam.SetLocalScale	1.0000000 1.0000000 1.0000000
-editor/cam.SetFrustum	-0.1220263 0.1220263 -0.0767327 0.0767327 0.1000000 5000.0000000
-editor/cam.SetRenderSize 2748 1728
+editor/cam.SetFrustum	-0.1190512 0.1190512 -0.0767327 0.0767327 0.1000000 5000.0000000
+editor/cam.SetRenderSize 2681 1728
 editor/cam.SetRenderer editor/ren
 editor/cam.SetCaptureFileName MGEngine
 editor/cam.SetClearColorBufferRegion 1
@@ -635,7 +635,7 @@ dashcam/cam.SetLocalRotation	69.2820282 -69.2820282 -69.2820282
 #dashcam/cam.SetLocalRotationAngles	90.0000000 0.0000017 -90.0000000
 dashcam/cam.SetLocalScale	1.0000000 1.0000000 1.0000000
 dashcam/cam.SetFrustum	-0.0041980 0.0041980 -0.0026795 0.0026795 0.0100000 10000.0000000
-dashcam/cam.SetRenderSize 500 375
+dashcam/cam.SetRenderSize 752 480
 dashcam/cam.SetRenderer dashcam/prend
 dashcam/cam.SetCaptureFileName MGEngine
 dashcam/cam.SetClearColorBufferRegion 1
@@ -676,7 +676,7 @@ dashcam/cam.SetOccludeLabels 1
 
 # Object dashcam/view with type sivicCameraViewport
 dashcam/view.SetDisabled	0
-dashcam/view.SetViewport 0 0 500 375
+dashcam/view.SetViewport 0 0 960 540
 dashcam/view.SetCamera dashcam/cam
 dashcam/view.SetColorMask 1 1 1
 dashcam/view.SetMinDepthRange 0.0000000
@@ -1116,25 +1116,25 @@ dummy/pedestrian/hipsmain.SetMesh	pedestrian/hipsmain
 dummy/pedestrian/hipsmain.SetCatchShadows	1
 dummy/pedestrian/hipsmain.SetOccludeAmbient	0
 dummy/pedestrian/hipsmain.SetCameraAligned	0
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/hipsmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/right_upper_legmain-joint with type mgPositionable
 dummy/pedestrian/right_upper_legmain-joint.SetDisabled	0
@@ -1159,25 +1159,25 @@ dummy/pedestrian/right_upper_legmain.SetMesh	pedestrian/right_upper_legmain
 dummy/pedestrian/right_upper_legmain.SetCatchShadows	1
 dummy/pedestrian/right_upper_legmain.SetOccludeAmbient	0
 dummy/pedestrian/right_upper_legmain.SetCameraAligned	0
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/right_upper_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/right_lower_legmain-joint with type mgPositionable
 dummy/pedestrian/right_lower_legmain-joint.SetDisabled	0
@@ -1202,25 +1202,25 @@ dummy/pedestrian/right_lower_legmain.SetMesh	pedestrian/right_lower_legmain
 dummy/pedestrian/right_lower_legmain.SetCatchShadows	1
 dummy/pedestrian/right_lower_legmain.SetOccludeAmbient	0
 dummy/pedestrian/right_lower_legmain.SetCameraAligned	0
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/right_lower_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/right_footmain-joint with type mgPositionable
 dummy/pedestrian/right_footmain-joint.SetDisabled	0
@@ -1245,25 +1245,25 @@ dummy/pedestrian/right_footmain.SetMesh	pedestrian/right_footmain
 dummy/pedestrian/right_footmain.SetCatchShadows	1
 dummy/pedestrian/right_footmain.SetOccludeAmbient	0
 dummy/pedestrian/right_footmain.SetCameraAligned	0
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/right_footmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/left_upper_legmain-joint with type mgPositionable
 dummy/pedestrian/left_upper_legmain-joint.SetDisabled	0
@@ -1288,25 +1288,25 @@ dummy/pedestrian/left_upper_legmain.SetMesh	pedestrian/left_upper_legmain
 dummy/pedestrian/left_upper_legmain.SetCatchShadows	1
 dummy/pedestrian/left_upper_legmain.SetOccludeAmbient	0
 dummy/pedestrian/left_upper_legmain.SetCameraAligned	0
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/left_upper_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/left_lower_legmain-joint with type mgPositionable
 dummy/pedestrian/left_lower_legmain-joint.SetDisabled	0
@@ -1331,25 +1331,25 @@ dummy/pedestrian/left_lower_legmain.SetMesh	pedestrian/left_lower_legmain
 dummy/pedestrian/left_lower_legmain.SetCatchShadows	1
 dummy/pedestrian/left_lower_legmain.SetOccludeAmbient	0
 dummy/pedestrian/left_lower_legmain.SetCameraAligned	0
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/left_lower_legmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/left_footmain-joint with type mgPositionable
 dummy/pedestrian/left_footmain-joint.SetDisabled	0
@@ -1374,25 +1374,25 @@ dummy/pedestrian/left_footmain.SetMesh	pedestrian/left_footmain
 dummy/pedestrian/left_footmain.SetCatchShadows	1
 dummy/pedestrian/left_footmain.SetOccludeAmbient	0
 dummy/pedestrian/left_footmain.SetCameraAligned	0
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/left_footmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/lower_torsomain-joint with type mgPositionable
 dummy/pedestrian/lower_torsomain-joint.SetDisabled	0
@@ -1417,25 +1417,25 @@ dummy/pedestrian/lower_torsomain.SetMesh	pedestrian/lower_torsomain
 dummy/pedestrian/lower_torsomain.SetCatchShadows	1
 dummy/pedestrian/lower_torsomain.SetOccludeAmbient	0
 dummy/pedestrian/lower_torsomain.SetCameraAligned	0
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/lower_torsomain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/upper_torsomain-joint with type mgPositionable
 dummy/pedestrian/upper_torsomain-joint.SetDisabled	0
@@ -1460,25 +1460,25 @@ dummy/pedestrian/upper_torsomain.SetMesh	pedestrian/upper_torsomain
 dummy/pedestrian/upper_torsomain.SetCatchShadows	1
 dummy/pedestrian/upper_torsomain.SetOccludeAmbient	0
 dummy/pedestrian/upper_torsomain.SetCameraAligned	0
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/upper_torsomain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/neckmain-joint with type mgPositionable
 dummy/pedestrian/neckmain-joint.SetDisabled	0
@@ -1503,25 +1503,25 @@ dummy/pedestrian/neckmain.SetMesh	pedestrian/neckmain
 dummy/pedestrian/neckmain.SetCatchShadows	1
 dummy/pedestrian/neckmain.SetOccludeAmbient	0
 dummy/pedestrian/neckmain.SetCameraAligned	0
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/neckmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/headmain-joint with type mgPositionable
 dummy/pedestrian/headmain-joint.SetDisabled	0
@@ -1546,25 +1546,25 @@ dummy/pedestrian/headmain.SetMesh	pedestrian/headmain
 dummy/pedestrian/headmain.SetCatchShadows	1
 dummy/pedestrian/headmain.SetOccludeAmbient	0
 dummy/pedestrian/headmain.SetCameraAligned	0
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/headmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/right_claviclemain-joint with type mgPositionable
 dummy/pedestrian/right_claviclemain-joint.SetDisabled	0
@@ -1589,25 +1589,25 @@ dummy/pedestrian/right_claviclemain.SetMesh	pedestrian/right_claviclemain
 dummy/pedestrian/right_claviclemain.SetCatchShadows	1
 dummy/pedestrian/right_claviclemain.SetOccludeAmbient	0
 dummy/pedestrian/right_claviclemain.SetCameraAligned	0
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/right_claviclemain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/right_upper_armmain-joint with type mgPositionable
 dummy/pedestrian/right_upper_armmain-joint.SetDisabled	0
@@ -1632,25 +1632,25 @@ dummy/pedestrian/right_upper_armmain.SetMesh	pedestrian/right_upper_armmain
 dummy/pedestrian/right_upper_armmain.SetCatchShadows	1
 dummy/pedestrian/right_upper_armmain.SetOccludeAmbient	0
 dummy/pedestrian/right_upper_armmain.SetCameraAligned	0
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/right_upper_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/right_lower_armmain-joint with type mgPositionable
 dummy/pedestrian/right_lower_armmain-joint.SetDisabled	0
@@ -1675,25 +1675,25 @@ dummy/pedestrian/right_lower_armmain.SetMesh	pedestrian/right_lower_armmain
 dummy/pedestrian/right_lower_armmain.SetCatchShadows	1
 dummy/pedestrian/right_lower_armmain.SetOccludeAmbient	0
 dummy/pedestrian/right_lower_armmain.SetCameraAligned	0
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/right_lower_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/right_handmain-joint with type mgPositionable
 dummy/pedestrian/right_handmain-joint.SetDisabled	0
@@ -1718,25 +1718,25 @@ dummy/pedestrian/right_handmain.SetMesh	pedestrian/right_handmain
 dummy/pedestrian/right_handmain.SetCatchShadows	1
 dummy/pedestrian/right_handmain.SetOccludeAmbient	0
 dummy/pedestrian/right_handmain.SetCameraAligned	0
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/right_handmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/left_claviclemain-joint with type mgPositionable
 dummy/pedestrian/left_claviclemain-joint.SetDisabled	0
@@ -1761,25 +1761,25 @@ dummy/pedestrian/left_claviclemain.SetMesh	pedestrian/left_claviclemain
 dummy/pedestrian/left_claviclemain.SetCatchShadows	1
 dummy/pedestrian/left_claviclemain.SetOccludeAmbient	0
 dummy/pedestrian/left_claviclemain.SetCameraAligned	0
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/left_claviclemain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/left_upper_armmain-joint with type mgPositionable
 dummy/pedestrian/left_upper_armmain-joint.SetDisabled	0
@@ -1804,25 +1804,25 @@ dummy/pedestrian/left_upper_armmain.SetMesh	pedestrian/left_upper_armmain
 dummy/pedestrian/left_upper_armmain.SetCatchShadows	1
 dummy/pedestrian/left_upper_armmain.SetOccludeAmbient	0
 dummy/pedestrian/left_upper_armmain.SetCameraAligned	0
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/left_upper_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/left_lower_armmain-joint with type mgPositionable
 dummy/pedestrian/left_lower_armmain-joint.SetDisabled	0
@@ -1847,25 +1847,25 @@ dummy/pedestrian/left_lower_armmain.SetMesh	pedestrian/left_lower_armmain
 dummy/pedestrian/left_lower_armmain.SetCatchShadows	1
 dummy/pedestrian/left_lower_armmain.SetOccludeAmbient	0
 dummy/pedestrian/left_lower_armmain.SetCameraAligned	0
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/left_lower_armmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dummy/pedestrian/left_handmain-joint with type mgPositionable
 dummy/pedestrian/left_handmain-joint.SetDisabled	0
@@ -1890,25 +1890,25 @@ dummy/pedestrian/left_handmain.SetMesh	pedestrian/left_handmain
 dummy/pedestrian/left_handmain.SetCatchShadows	1
 dummy/pedestrian/left_handmain.SetOccludeAmbient	0
 dummy/pedestrian/left_handmain.SetCameraAligned	0
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/hipsmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/headmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_handmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/neckmain
 dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_footmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_lower_legmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_upper_legmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/upper_torsomain
 dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/lower_torsomain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
-dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
 dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_claviclemain
 dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_lower_armmain
 dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_handmain
 dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/left_upper_armmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_handmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_lower_legmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_upper_legmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_footmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/hipsmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/headmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_upper_armmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_lower_armmain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/right_claviclemain
+dummy/pedestrian/left_handmain.IgnoreShadows	dummy/pedestrian/neckmain
 
 # Object dist_obs with type sivicPackage
 dist_obs.SetDisabled	0
