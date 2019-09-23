@@ -1,15 +1,16 @@
 % First PreScan replication, straight road
 %clear all
 %clear mex
-%for car_speed = 5:30:35
-%    for ped_x = -60:40:-20
-        car_speed = 55;
-        ped_x = -23;
+for car_speed = 5:30:35
+    for ped_x = -60:40:-20
+        %car_speed = 55;
+        %ped_x = -23;
         ped_y = -117.5;
         ped_orient = 65;
         ped_speed = 2.25;
 
         % load the static scene
+        %ret = sendCommand('PAUSE', 'localhost');
         ret = sendCommand('LOAD', 'localhost', 'prescan_repl_1.script');
         
         % set properties of the car (that has cruise control)
@@ -27,8 +28,8 @@
         % speed command must be sent after the simulation has started
 
         % create sivicTime object
-        ret = sendCommand('COMD', 'localhost', 'new sivicTime timeWrapper');
-        ret = sendCommand('SETP', 'localhost','timeWrapper','ExportMode','Mode_on');
+        %ret = sendCommand('COMD', 'localhost', 'new sivicTime timeWrapper');
+        %ret = sendCommand('SETP', 'localhost','timeWrapper','ExportMode','Mode_on');
 
         % pause the simulation (in order to launch pass command)
         ret = sendCommand('PAUSE', 'localhost');
@@ -36,34 +37,56 @@
         
         % execute X simulation steps
         nbr_sim_steps = 5000; % 5000 is good
-        step = 0;
+        step = 1;
+        %ret = sendCommand('SYNCHRODDS', 'localhost');
+        ret = sendCommand('COMD', 'localhost', 'pass 8'); % workaround: ignore the first
+        [car_head, car_data] = ProSiVIC_DDS('car_obs','objectobserver');
+        [ped_head, ped_data] = ProSiVIC_DDS('ped_obs','objectobserver');
+        [cam_head, cam_data] = ProSiVIC_DDS('ego_car/chassis/dashcam/cam','camera');      
+        dds_times = [0:1:50];
+        tcp_times = [0:1:50];
+        pause(1)
+        prev_time = 0;
         while step < nbr_sim_steps
+            [time_head, time_data] = ProSiVIC_DDS('timeWrapper','time');
+
+            dds_times(step) = time_head(1);
+            tcp_time = sendCommand ('GETP','localhost','timeWrapper','SimuTime');           
+            tcp_times(step) = str2num(tcp_time);
+            
             ret = sendCommand('COMD', 'localhost', 'pass 8'); % matching the 0.040 periodicity     
             [car_head, car_data] = ProSiVIC_DDS('car_obs','objectobserver');
             [ped_head, ped_data] = ProSiVIC_DDS('ped_obs','objectobserver');
-            [cam_head, cam_data] = ProSiVIC_DDS('ego_car/chassis/dashcam/cam','camera');
+            [cam_head, cam_data] = ProSiVIC_DDS('dashcam/cam','camera');
+            imshow(cam_data)
             %[headtime,datatime] = ProSiVIC_DDS('ego_car/chassis/radar/radar','radar');
-
+            
             %car_head(1)
             %datetime(car_head(1), 'convertfrom','posixtime')
             
-            % check three stop criteria
-            if (car_data(1) > 23)
-                disp("### Stopping simulation: Car drove 100 m")
-                break
-            elseif (ped_data(2) > (car_data(2) + 2))
-                disp("### Stopping simulation: Pedestrian crossed the street")
-                break
-            elseif (ped_data(1) < (car_data(1) + 1))
-                disp("### Stopping simulation: Car passed the pedestrian")
-                break        
+            % check three stop criteria  
+            if ped_head(1) ~= prev_time            
+                disp(step);
+                ped_data(1);
+                car_data(1);
+                if (car_data(1) > 23)
+                   disp("### Stopping simulation: Car drove 100 m")
+                   break
+                elseif (ped_data(2) > (car_data(2) + 2))
+                   disp("### Stopping simulation: Pedestrian crossed the street")
+                   break
+                elseif (ped_data(1) < (car_data(1) + 1))
+                   disp("### Stopping simulation: Car passed the pedestrian")
+                   break        
+                end
+                step = step + 1;
             end
-            step = step + 1;
+            prev_time = ped_head(1);
         end
 
         ret = sendCommand('STOP', 'localhost');
         
         % retreive the simulation time
         SimuTime = sendCommand ('GETP','localhost','timeWrapper','SimuTime')
-%    end
-%end
+    end
+end
