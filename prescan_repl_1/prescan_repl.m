@@ -41,17 +41,26 @@
             ret = sendCommand('COMD', 'localhost', 'pass 8'); % matching the 0.040 periodicity     
             [car_head, car_data] = ProSiVIC_DDS('car_obs','objectobserver');
             [ped_head, ped_data] = ProSiVIC_DDS('ped_obs','objectobserver');
-            %[cam_head, cam_data] = ProSiVIC_DDS('ego_car/chassis/dashcam/cam','camera')
+            [cam_head, cam_data] = ProSiVIC_DDS('ego_car/chassis/dashcam/cam','camera');
+            %[headtime,datatime] = ProSiVIC_DDS('ego_car/chassis/radar/radar','radar');
+
+            %car_head(1)
+            %datetime(car_head(1), 'convertfrom','posixtime')
             
             % check three stop criteria
-            car_data(1)
-            if (car_data(1) > 23)% || (ped_data(2) > (car_data(2) + 2)) || (ped_data(1) < car_data(1) + 1)
+            if (car_data(1) > 23)
+                disp("### Stopping simulation: Car drove 100 m")
                 break
-                % flush whatever DDS messages are there            
+            elseif (ped_data(2) > (car_data(2) + 2))
+                disp("### Stopping simulation: Pedestrian crossed the street")
+                break
+            elseif (ped_data(1) < (car_data(1) + 1))
+                disp("### Stopping simulation: Car passed the pedestrian")
+                break        
             end
             step = step + 1;
         end
-        
+
         ret = sendCommand('STOP', 'localhost');
         
         % retreive the simulation time
