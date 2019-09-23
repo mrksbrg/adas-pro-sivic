@@ -11,11 +11,6 @@ for car_speed = 5:30:35
         %load the static scene
         ret = sendCommand('LOAD', 'localhost', 'prescan_repl_1.script');
         
-        for c = 1:5
-            %[head,data] = ProSiVIC_DDS('car_obs','objectobserver')
-            pause(0.5);
-        end
-
         % set properties of the car (that has cruise control)
         init_car_speed_cmd = ['ego_car/car.SetInitSpeed ' num2str(car_speed)];
         init_car_speed_limit_cmd = ['ego_car/car.SetInitSpeedLimit ', num2str(car_speed)];
