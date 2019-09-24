@@ -1,6 +1,6 @@
 % First PreScan replication, straight road
-%clear all
-%clear mex
+prev_time = -1;
+
 for car_speed = 5:30:35
     for ped_x = -60:40:-20
         %car_speed = 55;
@@ -35,7 +35,7 @@ for car_speed = 5:30:35
         nbr_sim_steps = 5000; % 5000 is good
         step = 1;
         if prev_time <= 1
-            prev_time = 0
+            prev_time = 0;
         end
         
         % Instructions used for debugging
@@ -61,8 +61,21 @@ for car_speed = 5:30:35
             [ped_head, ped_data] = ProSiVIC_DDS('ped_obs','objectobserver');
             [cam_head, cam_data] = ProSiVIC_DDS('dashcam/cam','camera');
             %imshow(cam_data)
-            %[headtime,datatime] = ProSiVIC_DDS('ego_car/chassis/radar/radar','radar');
-                        
+            [radar_head, target_data] = ProSiVIC_DDS('radar/radar','radar');
+                                    
+            % Information that shall be sent to PDS
+            ego_car_speed = car_data(7);
+            ego_car_orient = car_data(6);
+            if radar_head(2) > 0
+                ped_dist = target_data(1);
+                ped_long_speed = target_data(3);
+                ped_azimuth = target_data(2);
+            else
+                ped_dist = -1;
+                ped_long_speed = -1;
+                ped_azimuth = -1;
+            end       
+                
             % check three stop criteria  
             if ped_head(1) ~= prev_time            
                 %disp(step);
@@ -74,13 +87,13 @@ for car_speed = 5:30:35
                 elseif (ped_data(2) > (car_data(2) + 2))
                    disp("### Stopping simulation: Pedestrian crossed the street")
                    break
-                elseif (ped_data(1) < (car_data(1) + 1))
+                elseif (ped_data(1) < (car_data(1) + 3.6))
                    disp("### Stopping simulation: Car passed the pedestrian")
                    break        
                 end
                 step = step + 1;
             else
-                %disp("  - Received the same timestamp again... Time: " + ped_head(1))
+                disp("  - Received the same timestamp again... Time: " + ped_head(1))
             end
             prev_time = ped_head(1);
         end
