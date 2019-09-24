@@ -27,10 +27,6 @@ for car_speed = 5:30:35
         set_ped_speed_cmd = ['dummy/pedestrian.SetSpeed ' num2str(ped_speed)];
         % speed command must be sent after the simulation has started
 
-        % create sivicTime object
-        %ret = sendCommand('COMD', 'localhost', 'new sivicTime timeWrapper');
-        %ret = sendCommand('SETP', 'localhost','timeWrapper','ExportMode','Mode_on');
-
         % pause the simulation (in order to launch pass command)
         ret = sendCommand('PAUSE', 'localhost');
         ret = sendCommand('COMD', 'localhost', set_ped_speed_cmd);
@@ -38,6 +34,9 @@ for car_speed = 5:30:35
         % execute X simulation steps
         nbr_sim_steps = 5000; % 5000 is good
         step = 1;
+        prev_time = 0;
+        
+        % Instructions used for debugging
         %ret = sendCommand('SYNCHRODDS', 'localhost');
         ret = sendCommand('COMD', 'localhost', 'pass 8'); % workaround: ignore the first
         [car_head, car_data] = ProSiVIC_DDS('car_obs','objectobserver');
@@ -46,11 +45,12 @@ for car_speed = 5:30:35
         dds_times = [0:1:50];
         tcp_times = [0:1:50];
         pause(1)
-        prev_time = 0;
+        
         while step < nbr_sim_steps
             [time_head, time_data] = ProSiVIC_DDS('timeWrapper','time');
-
             dds_times(step) = time_head(1);
+            
+            % Instructions used for debugging
             tcp_time = sendCommand ('GETP','localhost','timeWrapper','SimuTime');           
             tcp_times(step) = str2num(tcp_time);
             
@@ -58,11 +58,14 @@ for car_speed = 5:30:35
             [car_head, car_data] = ProSiVIC_DDS('car_obs','objectobserver');
             [ped_head, ped_data] = ProSiVIC_DDS('ped_obs','objectobserver');
             [cam_head, cam_data] = ProSiVIC_DDS('dashcam/cam','camera');
-            imshow(cam_data)
+            %imshow(cam_data)
             %[headtime,datatime] = ProSiVIC_DDS('ego_car/chassis/radar/radar','radar');
             
             %car_head(1)
             %datetime(car_head(1), 'convertfrom','posixtime')
+            %car_head(1)
+            
+            %disp("Ped Y: " + ped_data(2))
             
             % check three stop criteria  
             if ped_head(1) ~= prev_time            
@@ -81,7 +84,7 @@ for car_speed = 5:30:35
                 end
                 step = step + 1;
             end
-            prev_time = ped_head(1);
+            prev_time = ped_head(1)
         end
 
         ret = sendCommand('STOP', 'localhost');
