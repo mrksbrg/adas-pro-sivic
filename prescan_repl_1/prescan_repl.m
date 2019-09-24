@@ -34,7 +34,9 @@ for car_speed = 5:30:35
         % execute X simulation steps
         nbr_sim_steps = 5000; % 5000 is good
         step = 1;
-        prev_time = 0;
+        if prev_time <= 1
+            prev_time = 0
+        end
         
         % Instructions used for debugging
         %ret = sendCommand('SYNCHRODDS', 'localhost');
@@ -60,16 +62,10 @@ for car_speed = 5:30:35
             [cam_head, cam_data] = ProSiVIC_DDS('dashcam/cam','camera');
             %imshow(cam_data)
             %[headtime,datatime] = ProSiVIC_DDS('ego_car/chassis/radar/radar','radar');
-            
-            %car_head(1)
-            %datetime(car_head(1), 'convertfrom','posixtime')
-            %car_head(1)
-            
-            %disp("Ped Y: " + ped_data(2))
-            
+                        
             % check three stop criteria  
             if ped_head(1) ~= prev_time            
-                disp(step);
+                %disp(step);
                 ped_data(1);
                 car_data(1);
                 if (car_data(1) > 23)
@@ -83,13 +79,16 @@ for car_speed = 5:30:35
                    break        
                 end
                 step = step + 1;
+            else
+                %disp("  - Received the same timestamp again... Time: " + ped_head(1))
             end
-            prev_time = ped_head(1)
+            prev_time = ped_head(1);
         end
 
         ret = sendCommand('STOP', 'localhost');
         
         % retreive the simulation time
         SimuTime = sendCommand ('GETP','localhost','timeWrapper','SimuTime')
+        pause(1)
     end
 end
