@@ -1,6 +1,9 @@
 .idea
 *.asv
 *.csv
+*.mat
+*.r2017a
+simulink_cache.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
