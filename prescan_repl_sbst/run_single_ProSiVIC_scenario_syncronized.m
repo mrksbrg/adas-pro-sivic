@@ -30,10 +30,10 @@ ret = sendCommand('COMD', 'localhost', set_ped_speed_cmd);
 
 % Start the simulation in Pro-SiVIC and start the Simulink model
 %ret = sendCommand('SYNCHRODDS', 'localhost');
-ret = sendCommand('PLAY', 'localhost');
+%ret = sendCommand('PLAY', 'localhost');
 %ret = sendCommand('TOGGLEPAUSE', 'localhost');
 
-simOut = sim(fullfile(mfilepath,'/prescan_repl_pds.slx'));
+simOut = sim(fullfile(mfilepath,'/prescan_repl_pds_syncronized.slx'));
 
 % Check the stop conditions in the Simulink model
 % for i=1:length(simOut.flagStop.signals.values)

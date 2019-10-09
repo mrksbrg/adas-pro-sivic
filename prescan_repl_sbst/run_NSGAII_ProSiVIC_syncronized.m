@@ -35,7 +35,7 @@
 
 try
     % Initilize the 
-    mfilepath=fileparts(which('run_NSGAII_ProSiVIC.m'));
+    mfilepath=fileparts(which('run_NSGAII_ProSiVIC_syncronized.m'));
     addpath(fullfile(mfilepath,'/Functions'));
     addpath(fullfile(mfilepath,'/GA'));
     load_system(fullfile(mfilepath,'/prescan_repl_pds.slx'));
@@ -138,8 +138,12 @@ try
         % sum3= normalizeVal(BestDistPAWA,10,0); %Mindistancebetween P and AWA
         sum3= BestDistPAWA; %Mindistancebetween P and AWA
         % Decision variables are used to form the objective function.
-        chromosome(i,V+4) = sum3;  
+        chromosome(i,V+4) = sum3;
+        
+        
+        
     end
+    
     
     % Sort the initialized population
     
@@ -153,7 +157,10 @@ try
     name3 = strcat('NSGAIIOracle_',ds,'.txt');
     
     fid = fopen(name1, 'w');
-  
+    
+    
+    
+    
     fprintf(fid, '\n initial chromosome\n');
     fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',['x0P' '       ' 'y0P' '        ' 'Th0P' '       ' 'v0P' '      ' 'v0C' '     ' 'Det' '   ' 'OF1' '    ' 'OF2' '   ' 'OF3'  '     ' 'Rank' '    ' 'CD']);
     fprintf(fid, '\n');
@@ -164,6 +171,8 @@ try
     end
     fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
     NCSIM=0;
+    
+    
     
     SimTimeUntilNow=toc
     gim=0;

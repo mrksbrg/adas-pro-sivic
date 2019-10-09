@@ -1,4 +1,4 @@
-mfilepath=fileparts(which('run_prescan_repl_loop.m'));
+mfilepath=fileparts(which('run_prescan_repl_loop_syncronized.m'));
 
 population_size=5;
 
@@ -86,11 +86,11 @@ for i = 1 : population_size
     
     % Doesn't work!
     % Check the stop conditions in the Simulink model
-    for i=1:length(simOut.flagStop.signals.values)
-        if (simOut.flagStop.signals.values(i)==1)
-            ret = sendCommand('STOP', 'localhost');
-        end
-    end
+    %for i=1:length(simOut.flagStop.signals.values)
+    %    if (simOut.flagStop.signals.values(i)==1)
+    %        ret = sendCommand('STOP', 'localhost');
+    %    end
+    %end
     
     SimTicToc = toc
     scenario(i,V+1) = SimTicToc;
