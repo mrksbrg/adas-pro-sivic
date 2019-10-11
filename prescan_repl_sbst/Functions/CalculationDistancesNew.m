@@ -52,7 +52,7 @@ for i=3:(SimulationSteps+1),
         w = 3.4;
     end
     
-    if ((xPerson.signals.values(i,1) <= xCar.signals.values(i,1) + d) &&  (xPerson.signals.values(i,1) >= (xCar.signals.values(i,1)  + d +L_AWA)) && ( yPerson.signals.values(i,1) < yCar.signals.values(i,1) - 0.5 *w)  && (yPerson.signals.values(i,1) > yCar.signals.values(i,1) + 0.5 *w) )
+    if ((xPerson.signals.values(i,1) <= xCar.signals.values(i,1) - d) &&  (xPerson.signals.values(i,1) >= (xCar.signals.values(i,1)  - d -L_AWA)) && ( yPerson.signals.values(i,1) < yCar.signals.values(i,1) + 0.5 *w)  && (yPerson.signals.values(i,1) > yCar.signals.values(i,1) - 0.5 *w) )
         
         IndXC=xCar.signals.values(i,1);
         IndYC=yCar.signals.values(i,1);
@@ -93,7 +93,7 @@ for i=3:(SimulationSteps+1),
         
         
         
-    else if ((xPerson.signals.values(i,1) <= xCar.signals.values(i,1) + d) &&  (xPerson.signals.values(i,1) >= (xCar.signals.values(i,1)  + d +L_AWA)) && (yPerson.signals.values(i,1) >= yCar.signals.values(i,1) - 0.5 * w))
+    else if ((xPerson.signals.values(i,1) <= xCar.signals.values(i,1) - d) &&  (xPerson.signals.values(i,1) >= (xCar.signals.values(i,1)  - d -L_AWA)) && (yPerson.signals.values(i,1) >= yCar.signals.values(i,1)+ 0.5 * w))
             D2=0;
             Dist2=sqrt ((xPerson.signals.values(i,1)-xCar.signals.values(i,1)).^2 + (yPerson.signals.values(i,1)-yCar.signals.values(i,1)).^2);
             
@@ -108,7 +108,7 @@ for i=3:(SimulationSteps+1),
                 BestIndY0P=yPerson.signals.values(i,1);
                 BestIndVP=vPerson.signals.values(i,1);
             end
-            DistPAWA=abs((abs(yCar.signals.values(i,1)-yPerson.signals.values(i,1))- 0.5 * w)./sin(ThP*0.0174533)); %distance between P and AWA
+            DistPAWA=abs((abs(yCar.signals.values(i,1)-yPerson.signals.values(i,1))+ 0.5 * w)./sin(ThP*0.0174533)); %distance between P and AWA
             
             
             if DistPAWA < BestDistPAWA
@@ -122,7 +122,7 @@ for i=3:(SimulationSteps+1),
                 BestIndY0P=yPerson.signals.values(i,1);
                 BestIndVP=vPerson.signals.values(i,1);
             end
-        else if ((xPerson.signals.values(i,1) <= xCar.signals.values(i,1)) &&  (xPerson.signals.values(i,1) >= (xCar.signals.values(i,1)  + d )))
+        else if ((xPerson.signals.values(i,1) <= xCar.signals.values(i,1)) &&  (xPerson.signals.values(i,1) >= (xCar.signals.values(i,1)  -d )))
                 
                 
                 D3=0;
@@ -140,10 +140,10 @@ for i=3:(SimulationSteps+1),
                     BestIndVP=vPerson.signals.values(i,1);
                 end
                 
-                if (ThP*0.0174533) > 90
-                DistPAWA=abs(((xCar.signals.values(i,1))- xPerson.signals.values(i,1) + d)./cos(ThP*0.0174533)); %distance between P and AWA
+                if (ThP*0.0174533) < 90
+                DistPAWA=abs(((xCar.signals.values(i,1))- xPerson.signals.values(i,1) - d)./cos(ThP*0.0174533)); %distance between P and AWA
                 else
-                    DistPAWA=sqrt ((xCar.signals.values(i,1) +d - xPerson.signals.values(i,1)).^2 + (yCar.signals.values(i,1) - 0.5 * w - yPerson.signals.values(i,1)).^2);
+                    DistPAWA=sqrt ((xCar.signals.values(i,1) -d - xPerson.signals.values(i,1)).^2 + (yCar.signals.values(i,1) + 0.5 * w - yPerson.signals.values(i,1)).^2);
                 end
                 
                 if DistPAWA < BestDistPAWA
@@ -157,7 +157,7 @@ for i=3:(SimulationSteps+1),
                     BestIndY0P=yPerson.signals.values(i,1);
                     BestIndVP=vPerson.signals.values(i,1);
                 end
-            else if (xPerson.signals.values(i,1) <= (xCar.signals.values(i,1)  + d +L_AWA)),
+            else if (xPerson.signals.values(i,1) <= (xCar.signals.values(i,1)  - d -L_AWA)),
                     
                     Dist2=sqrt ((xPerson.signals.values(i,1)-xCar.signals.values(i,1)).^2 + (yPerson.signals.values(i,1)-yCar.signals.values(i,1)).^2);
                     
@@ -173,10 +173,10 @@ for i=3:(SimulationSteps+1),
                         BestIndVP=vPerson.signals.values(i,1);
                     end
                     
-                    if (ThP*0.0174533) < 90
-                    DistPAWA=abs(  (xPerson.signals.values(i,1)- (xCar.signals.values(i,1) + d +L_AWA))./((-1).* cos(ThP*0.0174533))); %distance between P and AWA
+                    if (ThP*0.0174533) > 90
+                    DistPAWA=abs(  (xPerson.signals.values(i,1)- (xCar.signals.values(i,1) - d -L_AWA))./((-1).* cos(ThP*0.0174533))); %distance between P and AWA
                     else
-                        DistPAWA=sqrt ((xPerson.signals.values(i,1)- (xCar.signals.values(i,1) + d +L_AWA)).^2 + (yPerson.signals.values(i,1)-yCar.signals.values(i,1) - 0.5 *w).^2);
+                        DistPAWA=sqrt ((xPerson.signals.values(i,1)- (xCar.signals.values(i,1) -d -L_AWA)).^2 + (yPerson.signals.values(i,1)-yCar.signals.values(i,1) + 0.5 *w).^2);
                     end
                     
                     if DistPAWA < BestDistPAWA
