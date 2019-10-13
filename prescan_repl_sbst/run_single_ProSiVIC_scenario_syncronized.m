@@ -35,9 +35,4 @@ ret = sendCommand('COMD', 'localhost', set_ped_speed_cmd);
 
 simOut = sim(fullfile(mfilepath,'/prescan_repl_pds_syncronized.slx'));
 
-% Check the stop conditions in the Simulink model
-% for i=1:length(simOut.flagStop.signals.values)
-%     if (simOut.flagStop.signals.values(i)==1)   
-%         ret = sendCommand('STOP', 'localhost');
-%     end
-% end
+clear mex

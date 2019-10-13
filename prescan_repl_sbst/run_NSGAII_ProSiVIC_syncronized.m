@@ -38,7 +38,7 @@ try
     mfilepath=fileparts(which('run_NSGAII_ProSiVIC_syncronized.m'));
     addpath(fullfile(mfilepath,'/Functions'));
     addpath(fullfile(mfilepath,'/GA'));
-    load_system(fullfile(mfilepath,'/prescan_repl_pds.slx'));
+    load_system(fullfile(mfilepath,'/prescan_repl_pds_syncronized.slx'));
     tic
     
     ST=10;
@@ -100,7 +100,7 @@ try
         %***
         %%%% Change position and orientation of Pedestrian
         %%%%%%%%% Generate the experiment %%%%%%%%%
-        run_single_ProSiVIC_scenario
+        run_single_ProSiVIC_scenario_syncronized
         
         %%%%
         %Run Simulation
@@ -157,10 +157,7 @@ try
     name3 = strcat('NSGAIIOracle_',ds,'.txt');
     
     fid = fopen(name1, 'w');
-    
-    
-    
-    
+ 
     fprintf(fid, '\n initial chromosome\n');
     fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',['x0P' '       ' 'y0P' '        ' 'Th0P' '       ' 'v0P' '      ' 'v0C' '     ' 'Det' '   ' 'OF1' '    ' 'OF2' '   ' 'OF3'  '     ' 'Rank' '    ' 'CD']);
     fprintf(fid, '\n');
@@ -171,9 +168,7 @@ try
     end
     fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
     NCSIM=0;
-    
-    
-    
+
     SimTimeUntilNow=toc
     gim=0;
     
@@ -183,8 +178,7 @@ try
         gim=gim+1;
         fprintf(fid, '\n Total number of times we call the sim until now = %d \n', NCSIM);
         fprintf(fid, '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n');
-        fprintf(fid, 'Generation Number = %d \n',gim);
-        
+        fprintf(fid, 'Generation Number = %d \n',gim);   
         
         %    display(i);
         t1NewSol=rem(now,1);
@@ -193,7 +187,6 @@ try
         tour = 2;
         
         parent_chromosome = tournament_selection(chromosome, pool, tour);
-        
         
         mu = 20;
         mum = 20;
@@ -352,10 +345,10 @@ try
             %%%% Change position and orientation of Pedestrian
             %%%%%%%%% Generate the experiment %%%%%%%%%
             
-            run_single_ProSiVIC_scenario
+            run_single_ProSiVIC_scenario_syncronized
+            
             %%%%
             %Run Simulation
-            
             
             %***
             NCSIM=NCSIM+1;
@@ -417,7 +410,8 @@ try
             %%%% Change position and orientation of Pedestrian
             %%%%%%%%% Generate the experiment %%%%%%%%%
             
-            run_single_ProSiVIC_scenario
+            run_single_ProSiVIC_scenario_syncronized
+            
             %%%%
             %Run Simulation
             
