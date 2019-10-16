@@ -139,11 +139,8 @@ try
         sum3= BestDistPAWA; %Mindistancebetween P and AWA
         % Decision variables are used to form the objective function.
         chromosome(i,V+4) = sum3;
-        
-        
-        
+            
     end
-    
     
     % Sort the initialized population
     
@@ -345,12 +342,11 @@ try
             %%%% Change position and orientation of Pedestrian
             %%%%%%%%% Generate the experiment %%%%%%%%%
             
-            run_single_ProSiVIC_scenario_syncronized
-            
             %%%%
             %Run Simulation
-            
+            run_single_ProSiVIC_scenario_syncronized          
             %***
+            
             NCSIM=NCSIM+1;
             for w=1:length(simOut.Detection.signals.values)
                 if simOut.Detection.signals.values(w)>MaxD
@@ -373,8 +369,7 @@ try
             % sum1= normalizeVal(BestDist2, 100,0); %MindistanceToCar P is not in the AWA
             sum1= BestDist2; %MindistanceToCar
             % Decision variables are used to form the objective function.
-            
-            
+                     
             child_1(:,V+2)= sum1;
             
             %sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
@@ -409,14 +404,12 @@ try
             %***
             %%%% Change position and orientation of Pedestrian
             %%%%%%%%% Generate the experiment %%%%%%%%%
-            
-            run_single_ProSiVIC_scenario_syncronized
-            
+           
             %%%%
             %Run Simulation
+            run_single_ProSiVIC_scenario_syncronized
+            %***
             
-            
-            %***%***
             NCSIM=NCSIM+1;
             for w=1:length(simOut.Detection.signals.values)
                 if simOut.Detection.signals.values(w)>MaxD
@@ -449,9 +442,7 @@ try
             sum3=BestDistPAWA; %Mindistancebetween P and AWA
             
             % Decision variables are used to form the objective function.
-            child_2(:,V+4) = sum3;
-            
-            
+            child_2(:,V+4) = sum3;       
             
             % Keep proper count and appropriately fill the child variable with all
             % the generated children for the particular generation.
@@ -459,12 +450,10 @@ try
             child(p,:) = child_1;
             child(p+1,:) = child_2;
             p = p + 2;
-            
+                        
         end
         offspring_chromosome = child;
-        
-        %
-        
+ 
         [main_pop,temp] = size(chromosome);
         [offspring_pop,temp] = size(offspring_chromosome);
         % temp is a dummy variable.
@@ -474,8 +463,7 @@ try
         intermediate_chromosome(1:main_pop,:) = chromosome;
         intermediate_chromosome(main_pop + 1 : main_pop + offspring_pop,1 : M+V+1) = ...
             offspring_chromosome;
-        
-        
+                
         intermediate_chromosome = ...
             non_domination_sort_mod(intermediate_chromosome, M, V+1);
         % Perform Selection
@@ -489,12 +477,10 @@ try
             a(:,i)=InB(i,:);
         end
         fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
-        
-        
+             
         SimTimeUntilNow=toc
         fprintf(fid, 'SimTimeUntilNow %.3f \n', SimTimeUntilNow);
-        
-        
+            
         chromosome = replace_chromosome(intermediate_chromosome, M, V+1, pop);
         
         fprintf(fid, 'selected chromosome \n');
@@ -510,7 +496,7 @@ try
             fprintf('%d generations completed\n',i);
         end
         
-    end
+    end % end while
     
     % Result
     % Save the result in ASCII text format.
