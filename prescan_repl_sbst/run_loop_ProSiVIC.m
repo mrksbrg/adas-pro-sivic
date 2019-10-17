@@ -1,4 +1,6 @@
 mfilepath=fileparts(which('run_loop_ProSiVIC.m'));
+addpath(fullfile(mfilepath,'/Functions'));
+addpath(fullfile(mfilepath,'/GA'));
 
 population_size=1;
 
@@ -22,29 +24,26 @@ for i = 1 : population_size
     ped_speed = scenario(i,4);
     car_speed = scenario(i,5);
     
-    % Scenario without detection: x0P=233.571311;  y0P=315.683983; ThP= -61.711837; v0P=2.817673; v0C=  90.000000
+    % Debug scenario (no detection)
     % x0P=206.496730; y0P=309.754843 ThP= -29.752820  v0P=4.000000  v0C=85.078100;
+    % BestDist2 = 0.5116 or 0.7824
+    % TTC = 0.0586 or 4
+    % BestDistPAWA = 0
     
-    ped_x = 206.496730;
-    ped_y = 309.754843;
-    ped_orient = -29.752820;
-    ped_speed = 4.000000;
-    car_speed = 85.078100;
+    ped_x = 207.335725;
+    ped_y = 309.783476;
+    ped_orient = -28.787424;
+    ped_speed = 4.081919;
+    car_speed = 86.834864;
     
-    %
-    % Scenario with detection:  x0P=252.941874;  y0P=308.036294;  ThP=-91.541030;  v0P=2.160456; v0C=43.006057
+    % 1  0.244789  0.045611  0.000853 % not exactly, but ok.
+    % non-deterministic.
     
-    
-    % x0P=206.975508;  y0P=309.150958  ThP=-30.062620  v0P=4.157015  v0C=86.489625;
-    
-    %     ped_x = 206.975508;
-    %     ped_y = 309.150958;
-    %     ped_orient = -30.062620;
-    %     ped_speed = 4.157015;
-    %     car_speed = 86.489625;
-    
-    %
-    
+    %     ped_x=200.194026;
+    %     ped_y= 315.257184
+    %     ped_orient= -30.405581
+    %     ped_speed=4.184735
+    %     car_speed=12.128741
     
     % Pro-SiVIC scenario with collision
     %     ped_x = 255;
@@ -108,16 +107,14 @@ for i = 1 : population_size
     
     run_single_ProSiVIC_scenario
     
-    %***
+    AA=simOut.SimStopTime.time;
+    b=numel(AA);
+    TotSim=AA(b);
+    SimulationTimeStep=0.005;
     
-    % Doesn't work!
-    % Check the stop conditions in the Simulink model
-    %for i=1:length(simOut.flagStop.signals.values)
-    %    if (simOut.flagStop.signals.values(i)==1)
-    %        ret = sendCommand('STOP', 'localhost');
-    %        disp('STOP command sent to Pro-SiVIC')
-    %    end
-    %end
+    [BestDist2,TTCMIN,BestDistPAWA] = ObjectiveFunctionsDistancesNew(TotSim,SimulationTimeStep,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
+    
+    %***
     
     SimTicToc = toc
     scenario(i,V+1) = SimTicToc;
@@ -129,7 +126,7 @@ formatOut = 'yyyymmdd_HHMMss_FFF';
 ds=datestr(now,formatOut);
 name = strcat('TestResults_',ds,'.csv');
 fid =  fopen(name, 'w');
-fprintf(fid, '%s  %s  %s  %s  %s  %s \n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'SimulationTime']);
+fprintf(fid, '%s  %s  %s  %s  %s  %s %s %s %s \n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'SimulationTime' ',' 'OF1' ',' 'OF2' ',' 'OF3']);
 fprintf(fid, '\n');
 clear EC
 EC(:,1:6)=scenario;

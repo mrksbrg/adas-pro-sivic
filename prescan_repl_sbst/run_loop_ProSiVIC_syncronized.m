@@ -1,6 +1,8 @@
 mfilepath=fileparts(which('run_loop_ProSiVIC_syncronized.m'));
+addpath(fullfile(mfilepath,'/Functions'));
+addpath(fullfile(mfilepath,'/GA'));
 
-population_size=5;
+population_size=1;
 
 x0C=282.741; y0C=301.75; % this is where the center of the car is in Pro-SiVIC
 min_r=[x0C-85;y0C+2;-140;1;1*3.6]; %[min_x_person; min_y_person;min_orientation_person;min_speed_person;min_speed_car]
@@ -21,6 +23,21 @@ for i = 1 : population_size
     ped_orient = scenario(i,3);
     ped_speed = scenario(i,4);
     car_speed = scenario(i,5);
+    
+    % Debug scenario (no detection)
+    % x0P=206.496730; y0P=309.754843 ThP= -29.752820  v0P=4.000000  v0C=85.078100;
+    % BestDist2 = 0.5116 or 0.7824
+    % TTC = 0.0586 or 4
+    % BestDistPAWA = 0
+    
+    ped_x = 207.335725;
+    ped_y = 309.783476;
+    ped_orient = -28.787424;
+    ped_speed = 4.081919;
+    car_speed = 86.834864;
+    
+    % 1  0.244789  0.045611  0.000853 % not exactly, but ok.
+    % non-deterministic.
     
     % Pro-SiVIC scenario with collision
     %     ped_x = 255;
@@ -65,17 +82,17 @@ for i = 1 : population_size
     %     prescan_car_speed=17.532561
     %
     %     %Scenario 2 with Detection (DIFFERENT)
-%     prescan_x=54.199988
-%     prescan_y=41.228122
-%     prescan_orient=46.629705
-%     ped_speed=3.218916
-%     prescan_car_speed=19.209868
+    %     prescan_x=54.199988
+    %     prescan_y=41.228122
+    %     prescan_orient=46.629705
+    %     ped_speed=3.218916
+    %     prescan_car_speed=19.209868
     
     % Convert to parameters for horseshoe ground in Pro-SiVIC
-%     ped_x = x0C - prescan_x
-%     ped_y = y0C + (50 - prescan_y)
-%     ped_orient = -180 + prescan_orient
-%     car_speed = prescan_car_speed * 3.6
+    %     ped_x = x0C - prescan_x
+    %     ped_y = y0C + (50 - prescan_y)
+    %     ped_orient = -180 + prescan_orient
+    %     car_speed = prescan_car_speed * 3.6
     % -30 degrees works
     %ped_orient = -172.5
     
@@ -84,13 +101,7 @@ for i = 1 : population_size
     
     %***
     
-    % Doesn't work!
-    % Check the stop conditions in the Simulink model
-    %for i=1:length(simOut.flagStop.signals.values)
-    %    if (simOut.flagStop.signals.values(i)==1)
-    %        ret = sendCommand('STOP', 'localhost');
-    %    end
-    %end
+    [BestDist2,TTCMIN,BestDistPAWA] = calcObjFuncs(simOut, ped_orient) %simulationSteps,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
     
     SimTicToc = toc
     scenario(i,V+1) = SimTicToc;

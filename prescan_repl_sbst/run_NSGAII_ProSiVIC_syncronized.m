@@ -1,7 +1,7 @@
-% This script demonstrates how multi-objective optimization can be used for 
-% generation of critical scenarios in simulation-based ADAS testing. The script 
+% This script demonstrates how multi-objective optimization can be used for
+% generation of critical scenarios in simulation-based ADAS testing. The script
 % implements an evolutionary algorithm, NSGA-II, to find the optimal
-% solution for multiple objectives, i.e., the pareto front for the objectives. 
+% solution for multiple objectives, i.e., the pareto front for the objectives.
 %
 % The original algorithm NSGA-II was developed by the Kanpur Genetic
 % Algorithm Labarotary http://www.iitk.ac.in/kangal/
@@ -11,30 +11,30 @@
 %  Copyright (c) 2019, Markus Borg
 %  All rights reserved.
 %
-%  Redistribution and use in source and binary forms, with or without 
-%  modification, are permitted provided that the following conditions are 
+%  Redistribution and use in source and binary forms, with or without
+%  modification, are permitted provided that the following conditions are
 %  met:
 %
-%     * Redistributions of source code must retain the above copyright 
+%     * Redistributions of source code must retain the above copyright
 %       notice, this list of conditions and the following disclaimer.
-%     * Redistributions in binary form must reproduce the above copyright 
-%       notice, this list of conditions and the following disclaimer in 
+%     * Redistributions in binary form must reproduce the above copyright
+%       notice, this list of conditions and the following disclaimer in
 %       the documentation and/or other materials provided with the distribution
-%      
-%  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-%  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-%  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-%  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-%  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-%  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-%  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-%  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+%
+%  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+%  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+%  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+%  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+%  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+%  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+%  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+%  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 %  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-%  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+%  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 %  POSSIBILITY OF SUCH DAMAGE.
 
 try
-    % Initilize the 
+    % Initilize the
     mfilepath=fileparts(which('run_NSGAII_ProSiVIC_syncronized.m'));
     addpath(fullfile(mfilepath,'/Functions'));
     addpath(fullfile(mfilepath,'/GA'));
@@ -84,7 +84,7 @@ try
         ped_orient=chromosome(i,3)
         ped_speed=chromosome(i,4)
         car_speed=chromosome(i,5)
-                
+        
         %chromosome(i,V+1:K)=[];
         sum1 = 0;
         sum2 = 0;
@@ -120,7 +120,7 @@ try
         AA=simOut.SimStopTime.time;
         b=numel(AA);
         TotSim=AA(b);
-        [BestDist2,TTCMIN,BestDistPAWA]=ObjectiveFunctionsDistancesNew(TotSim,SimulationTimeStep,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
+        [BestDist2,TTCMIN,BestDistPAWA]=calcObjFuncs(simOut,ped_orient);
         
         NFIT=NFIT+1;
         % sum0=normalizeVal(BestDist, 80,0);%MindistanceToCar P is in the AWA
@@ -139,7 +139,7 @@ try
         sum3= BestDistPAWA; %Mindistancebetween P and AWA
         % Decision variables are used to form the objective function.
         chromosome(i,V+4) = sum3;
-            
+        
     end
     
     % Sort the initialized population
@@ -154,7 +154,7 @@ try
     name3 = strcat('NSGAIIOracle_',ds,'.txt');
     
     fid = fopen(name1, 'w');
- 
+    
     fprintf(fid, '\n initial chromosome\n');
     fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',['x0P' '       ' 'y0P' '        ' 'Th0P' '       ' 'v0P' '      ' 'v0C' '     ' 'Det' '   ' 'OF1' '    ' 'OF2' '   ' 'OF3'  '     ' 'Rank' '    ' 'CD']);
     fprintf(fid, '\n');
@@ -165,7 +165,7 @@ try
     end
     fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
     NCSIM=0;
-
+    
     SimTimeUntilNow=toc
     gim=0;
     
@@ -175,7 +175,7 @@ try
         gim=gim+1;
         fprintf(fid, '\n Total number of times we call the sim until now = %d \n', NCSIM);
         fprintf(fid, '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n');
-        fprintf(fid, 'Generation Number = %d \n',gim);   
+        fprintf(fid, 'Generation Number = %d \n',gim);
         
         %    display(i);
         t1NewSol=rem(now,1);
@@ -344,7 +344,7 @@ try
             
             %%%%
             %Run Simulation
-            run_single_ProSiVIC_scenario_syncronized          
+            run_single_ProSiVIC_scenario_syncronized
             %***
             
             NCSIM=NCSIM+1;
@@ -362,14 +362,14 @@ try
             AA=simOut.SimStopTime.time;
             b=numel(AA);
             TotSim=AA(b);
-            [BestDist2,TTCMIN,BestDistPAWA]=ObjectiveFunctionsDistancesNew(TotSim,SimulationTimeStep,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
+            [BestDist2,TTCMIN,BestDistPAWA] = calcObjFuncs(simOut,ped_orient);
             NFIT=NFIT+1;
             
             % sum0=normalizeVal(BestDist, 80,0);%MindistanceToCar P is in the AWA
             % sum1= normalizeVal(BestDist2, 100,0); %MindistanceToCar P is not in the AWA
             sum1= BestDist2; %MindistanceToCar
             % Decision variables are used to form the objective function.
-                     
+            
             child_1(:,V+2)= sum1;
             
             %sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
@@ -404,7 +404,7 @@ try
             %***
             %%%% Change position and orientation of Pedestrian
             %%%%%%%%% Generate the experiment %%%%%%%%%
-           
+            
             %%%%
             %Run Simulation
             run_single_ProSiVIC_scenario_syncronized
@@ -424,7 +424,7 @@ try
             AA=simOut.SimStopTime.time;
             b=numel(AA);
             TotSim=AA(b);
-            [BestDist2,TTCMIN,BestDistPAWA]=ObjectiveFunctionsDistancesNew(TotSim,SimulationTimeStep,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
+            [BestDist2,TTCMIN,BestDistPAWA]=calcObjFuncs(simOut,ped_orient);
             NFIT=NFIT+1;
             %sum0=normalizeVal(BestDist, 80,0);%MindistanceToCar P is in the AWA
             % sum1= normalizeVal(BestDist2, 100,0); %MindistanceToCar P is not in the AWA
@@ -442,7 +442,7 @@ try
             sum3=BestDistPAWA; %Mindistancebetween P and AWA
             
             % Decision variables are used to form the objective function.
-            child_2(:,V+4) = sum3;       
+            child_2(:,V+4) = sum3;
             
             % Keep proper count and appropriately fill the child variable with all
             % the generated children for the particular generation.
@@ -450,10 +450,10 @@ try
             child(p,:) = child_1;
             child(p+1,:) = child_2;
             p = p + 2;
-                        
+            
         end
         offspring_chromosome = child;
- 
+        
         [main_pop,temp] = size(chromosome);
         [offspring_pop,temp] = size(offspring_chromosome);
         % temp is a dummy variable.
@@ -463,7 +463,7 @@ try
         intermediate_chromosome(1:main_pop,:) = chromosome;
         intermediate_chromosome(main_pop + 1 : main_pop + offspring_pop,1 : M+V+1) = ...
             offspring_chromosome;
-                
+        
         intermediate_chromosome = ...
             non_domination_sort_mod(intermediate_chromosome, M, V+1);
         % Perform Selection
@@ -477,10 +477,10 @@ try
             a(:,i)=InB(i,:);
         end
         fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
-             
+        
         SimTimeUntilNow=toc
         fprintf(fid, 'SimTimeUntilNow %.3f \n', SimTimeUntilNow);
-            
+        
         chromosome = replace_chromosome(intermediate_chromosome, M, V+1, pop);
         
         fprintf(fid, 'selected chromosome \n');
@@ -506,7 +506,7 @@ try
         a(:,i)=chromosome(i,:);
     end
     fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
-      
+    
     totSimTime=toc
     fprintf(fid, 'totSimTime %.3f \n', totSimTime);
     fprintf(fid, '\n Total number of times we call the sim in about 150mn = %d \n', NCSIM);
