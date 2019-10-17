@@ -25,16 +25,13 @@ for i = 1 : population_size
     car_speed = scenario(i,5);
     
     % Debug scenario (no detection)
-    % x0P=206.496730; y0P=309.754843 ThP= -29.752820  v0P=4.000000  v0C=85.078100;
-    % BestDist2 = 0.5116 or 0.7824
-    % TTC = 0.0586 or 4
-    % BestDistPAWA = 0
+    %x0P=206.937812; y0P=309.450342; ThP=-28.096459 v0P=4.192310;v0C=86.042553;), 
     
-    ped_x = 207.335725;
-    ped_y = 309.783476;
-    ped_orient = -28.787424;
-    ped_speed = 4.081919;
-    car_speed = 86.834864;
+    ped_x = 206.937812;
+    ped_y = 309.450342;
+    ped_orient = -28.096459;
+    ped_speed = 4.192310;
+    car_speed = 86.042553;
     
     % 1  0.244789  0.045611  0.000853 % not exactly, but ok.
     % non-deterministic.
@@ -107,12 +104,7 @@ for i = 1 : population_size
     
     run_single_ProSiVIC_scenario
     
-    AA=simOut.SimStopTime.time;
-    b=numel(AA);
-    TotSim=AA(b);
-    SimulationTimeStep=0.005;
-    
-    [BestDist2,TTCMIN,BestDistPAWA] = ObjectiveFunctionsDistancesNew(TotSim,SimulationTimeStep,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
+    [BestDist2,TTCMIN,BestDistPAWA] = calcObjFuncs(simOut, ped_orient)
     
     %***
     
