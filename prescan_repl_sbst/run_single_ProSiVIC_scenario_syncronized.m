@@ -1,13 +1,14 @@
 % load the static scene
-ret = sendCommand('LOAD', 'localhost', 'prescan_repl_horsering-reduced.script');
+ret = sendCommand('LOAD', '192.168.1.106', 'prescan_repl_horsering-reduced.script')
+ret = sendCommand('COMD', '192.168.1.106', 'run toggle_pedestrian_shadows.script')
 
 % set properties of the car (that has cruise control)
 init_car_speed_cmd = ['ego_car/car.SetInitSpeed ' num2str(car_speed)];
 car_speed_cmd = ['ego_car/car.SetSpeed ' num2str(car_speed)];
 car_speed_control_cmd = ['ego_car/car.SetInitSpeedLimit ', num2str(car_speed)];
-ret = sendCommand('COMD', 'localhost', init_car_speed_cmd);
-ret = sendCommand('COMD', 'localhost', car_speed_cmd);
-ret = sendCommand('COMD', 'localhost', car_speed_control_cmd);
+ret = sendCommand('COMD', '192.168.1.106', init_car_speed_cmd);
+ret = sendCommand('COMD', '192.168.1.106', car_speed_cmd);
+ret = sendCommand('COMD', '192.168.1.106', car_speed_control_cmd);
 
 % set properties for the pedestrian
 init_ped_position_cmd = ['dummy/pedestrian.SetPosition ' num2str(ped_x) ' ' num2str(ped_y)]; % skip the Z coordinate, road is ground
