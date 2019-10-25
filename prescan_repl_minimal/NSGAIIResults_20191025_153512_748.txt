@@ -1,0 +1,3 @@
+
+ initial chromosome
+x0P       y0P        Th0P       v0P      v0C     Det   OF1    OF2   OF3     Rank    CD  
