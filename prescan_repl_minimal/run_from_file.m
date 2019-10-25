@@ -31,7 +31,7 @@ mfilepath = fileparts(which('run_from_file.m'));
 addpath(fullfile(mfilepath,'/Functions'));
 addpath(fullfile(mfilepath,'/GA'));
 
-imported_data = importdata('input/test_input.csv', ',');
+imported_data = importdata('input/PreScan_data_1.csv', ',');
 results_PreScan = imported_data;
 % initialize result matrix with NaN for all elements
 results_ProSivic = NaN(size(imported_data, 1), 10) * -1;
@@ -118,8 +118,10 @@ for i = 1 : size(imported_data,1)
 end
 
 % write results to files
-file_PreScan = strcat('output/result_input_PreScan','.csv');
-file_ProSivic = strcat('output/result_input_ProSivic','.csv');
+format = 'yyyymmdd_HHMMss_FFF';
+time_now = datestr(now, format);
+file_PreScan = strcat('output/result_input_PreScan-', time_now, '.csv');
+file_ProSivic = strcat('output/result_input_ProSivic-', time_now, '.csv');
 fid_1 = fopen(file_PreScan, 'w');
 fid_2 = fopen(file_ProSivic, 'w');
 fprintf(fid_1, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n', ['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1' ',' 'OF2' ',' 'OF3'  ',' 'Det' ',' 'Coll']);
