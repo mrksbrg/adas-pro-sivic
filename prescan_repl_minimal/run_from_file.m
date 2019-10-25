@@ -4,7 +4,7 @@ addpath(fullfile(mfilepath,'/GA'));
 
 population_size=1;
 
-x0C=282.741; y0C=301.75; % this is where the center of the car is in Pro-SiVIC
+x0C=282.70; y0C=301.75; % this is where the center of the Mini Cooper is in Pro-SiVIC
 min_r=[x0C-85;y0C+2;-140;1;1*3.6]; %[min_x_person; min_y_person;min_orientation_person;min_speed_person;min_speed_car]
 max_r=[x0C-20;y0C+15;-20;5;25*3.6];%[max_x_person; max_y_person;max_orientation_person;max_speed_person;max_speed_car]
 
@@ -44,7 +44,7 @@ for i = 1 : population_size
     prescan_x = 78.833717;
     prescan_y = 41.544314;
     prescan_orient = 95.596676;
-    ped_speed = 1.886074;
+    ped_speed = 1.486074;
     prescan_car_speed = 25.000000
     
     % Convert to parameters for horseshoe ground in Pro-SiVIC
@@ -60,33 +60,27 @@ for i = 1 : population_size
     
     [BestDist2,TTCMIN,BestDistPAWA] = calcObjFuncs(simOut, ped_orient) %simulationSteps,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
     
-    % TEMP CHECK DETECTION
-    Det=0;
-    MaxD=0;
-    for w=1:length(simOut.Detection.signals.values)
-        if simOut.Detection.signals.values(w)>MaxD
-            MaxD=simOut.Detection.signals.values ( w );
+    % CHECK DETECTION
+    det=0;
+    detectionVector = simOut.Detection.signals.values;
+    for w=1:length(detectionVector)
+        if detectionVector(w)>0
+            det = 1;
+            break
         end
     end
-    if MaxD~=0
-        Det=1;
-    end
-    disp(Det)
+    disp(det)
     
-    % TEMP CHECK COLLISION
-    MaxColl=0;
-    for bb=1: size(simOut.Collision.signals.values,1)
-        if simOut.Collision.signals.values(bb) > MaxColl
-            MaxColl=simOut.Collision.signals.values(bb);
+    % CHECK COLLISION
+    col = 0;
+    collisionVector = simOut.isCollision.signals.values;
+    for i=1:length(collisionVector)   
+        if collisionVector(i) > 0
+            col = 1;
+            break
         end
     end
-    
-    if MaxColl~= 0
-        CollisionYesNo=1;
-    else
-        CollisionYesNo=0;
-    end
-    disp(CollisionYesNo)
+    disp(col)
     
     SimTicToc = toc
     scenario(i,V+1) = SimTicToc;
@@ -105,8 +99,8 @@ EC(:,1:6)=scenario;
 EC(:,7)=BestDist2;
 EC(:,8)=TTCMIN;
 EC(:,9)=BestDistPAWA;
-EC(:,10)=Det;
-EC(:,11)=CollisionYesNo;
+EC(:,10)=det;
+EC(:,11)=col;
 clear a;
 for i=1:size(EC,1)
     a(:,i)=EC(i,:);
