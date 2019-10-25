@@ -59,7 +59,7 @@ try
     
     M=3;
     V=5;
-    x0C=282.741; y0C=301.75; % this is where the center of the car is in Pro-SiVIC
+    x0C=282.70; y0C=301.75; % this is where the center of the Mini Cooper is in Pro-SiVIC
     min_range=[x0C-85;y0C+2;-140;1;1*3.6]; %[min_x_person; min_y_person;min_orientation_person;min_speed_person;min_speed_car]
     max_range=[x0C-20;y0C+15;-20;5;25*3.6];%[max_x_person; max_y_person;max_orientation_person;max_speed_person;max_speed_car]
     % Initialize the population
@@ -169,7 +169,7 @@ try
     SimTimeUntilNow=toc
     gim=0;
     
-    while SimTimeUntilNow <9000 %150min
+    while SimTimeUntilNow < 7200 %<9000 %150min
         SimTimeUntilNow=toc
         fprintf(fid, 'SimTimeUntilNow %.3f \n', SimTimeUntilNow);
         gim=gim+1;
