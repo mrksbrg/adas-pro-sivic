@@ -1,114 +1,175 @@
-mfilepath=fileparts(which('run_from_file.m'));
+% This script demonstrates reads input parameters from a file and runs the
+% corresponding scenarios in Pro-SiVIC.
+%
+%  Copyright (c) 2019, Raja Ben Abdessalem
+%  Copyright (c) 2019, Markus Borg
+%  All rights reserved.
+%
+%  Redistribution and use in source and binary forms, with or without
+%  modification, are permitted provided that the following conditions are
+%  met:
+%
+%     * Redistributions of source code must retain the above copyright
+%       notice, this list of conditions and the following disclaimer.
+%     * Redistributions in binary form must reproduce the above copyright
+%       notice, this list of conditions and the following disclaimer in
+%       the documentation and/or other materials provided with the distribution
+%
+%  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+%  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+%  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+%  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+%  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+%  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+%  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+%  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+%  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+%  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+%  POSSIBILITY OF SUCH DAMAGE.
+
+mfilepath = fileparts(which('run_from_file.m'));
 addpath(fullfile(mfilepath,'/Functions'));
 addpath(fullfile(mfilepath,'/GA'));
 
-population_size=1;
+imported_data = importdata('input/PreScan_data_1.csv', ',');
+results_PreScan = imported_data;
+% initialize result matrix with NaN for all elements
+results_ProSivic = NaN(size(imported_data, 1), 10) * -1;
 
-x0C=282.741; y0C=301.75; % this is where the center of the car is in Pro-SiVIC
-min_r=[x0C-85;y0C+2;-140;1;1*3.6]; %[min_x_person; min_y_person;min_orientation_person;min_speed_person;min_speed_car]
-max_r=[x0C-20;y0C+15;-20;5;25*3.6];%[max_x_person; max_y_person;max_orientation_person;max_speed_person;max_speed_car]
+% the center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
+x0_car = 282.70;
+y0_car = 301.75; 
 
-V=size(min_r,1);
-scenario = zeros(population_size, V);
-% Initialize the population
-
-for i = 1 : population_size
+for i = 1 : size(imported_data,1)
     tic
-    for j = 1 : V
-        scenario(i,j) = (min_r(j) + (max_r(j) - min_r(j))*rand(1));
-    end
     
-    ped_x = scenario(i,1);
-    ped_y = scenario(i,2);
-    ped_orient = scenario(i,3);
-    ped_speed = scenario(i,4);
-    car_speed = scenario(i,5);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% 1. SET UP SCENARIO %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    % Debug scenario (no detection)
-    %x0P=206.937812; y0P=309.450342; ThP=-28.096459 v0P=4.192310;v0C=86.042553;),
+    x0_ped_PreScan = imported_data(i,1); % x of the pedestrian
+    y0_ped_PreScan = imported_data(i,2); % x of the pedestrian
+    orient_ped_PreScan = imported_data(i,3); % orientation of the pedestrian
+    v_ped_PreScan = imported_data(i,4); % speed of the pedestrian in m/s
+    v_car_PreScan = imported_data(i,5); % speed of the car in m/s
     
-    % 206.516373  309.243690  -26.124790  4.182511  86.963155
-    % 247.641689  312.517152  -115.855551  3.255967  55.519299
-    % 237.058823  310.465038  -52.784776  3.842063  71.061850
+    ped_x = x0_car - x0_ped_PreScan;
+    ped_y = y0_car + (50 - y0_ped_PreScan);
+    ped_orient = -180 + orient_ped_PreScan;
+    ped_speed = v_ped_PreScan;
+    car_speed = 3.6 * v_car_PreScan;
     
+    %%%%%%%%%%%%%%%%%%%%%%%
+    %%% 2. RUN SCENARIO %%%
+    %%%%%%%%%%%%%%%%%%%%%%%
     
-%     ped_x = 78.833717;
-%     ped_y = 41.544314;
-%     ped_orient = 95.596676;
-%     ped_speed = 2.386074;
-%     car_speed = 25.000000
-    
-    % PreScan: 37.109120  43.119186  123.633950  4.258442  18.193262
-    % 78.833717  41.544314  95.596676  2.386074  25.000000
-    
-    prescan_x = 78.833717;
-    prescan_y = 41.544314;
-    prescan_orient = 95.596676;
-    ped_speed = 1.886074;
-    prescan_car_speed = 25.000000
-    
-    % Convert to parameters for horseshoe ground in Pro-SiVIC
-    ped_x = x0C - prescan_x
-    ped_y = y0C + (50 - prescan_y)
-    ped_orient = -180 + prescan_orient
-    car_speed = prescan_car_speed * 3.6
-    
-    %*** RUN simulation in Pro-SiVIC until reaching the stop condition
+    % run simulation in Pro-SiVIC until reaching one of the stop criteria
     run_single_scenario
     
-    %***
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% 3. EVALUATE RESULTS %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    [BestDist2,TTCMIN,BestDistPAWA] = calcObjFuncs(simOut, ped_orient) %simulationSteps,simOut.xCar,simOut.yCar,simOut.vCar,simOut.xPerson,simOut.yPerson,simOut.vPerson,ped_orient,simOut.TTCcol);
+    % three objectives to minimize
+    % I. min_dist = minimum distance between pedestrian and car
+    % II. min_ttc = minimum time to collision
+    % III. min_dist_awa = minimum distance between pedestrian and acute warning
+    % area (in front of the car)
+    [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient); 
     
-    % TEMP CHECK DETECTION
-    Det=0;
-    MaxD=0;
-    for w=1:length(simOut.Detection.signals.values)
-        if simOut.Detection.signals.values(w)>MaxD
-            MaxD=simOut.Detection.signals.values ( w );
-        end
-    end
-    if MaxD~=0
-        Det=1;
-    end
-    disp(Det)
-    
-    % TEMP CHECK COLLISION
-    MaxColl=0;
-    for bb=1: size(simOut.Collision.signals.values,1)
-        if simOut.Collision.signals.values(bb) > MaxColl
-            MaxColl=simOut.Collision.signals.values(bb);
+    % check if the simulation resulted in a pedestrian detection
+    detection = 0;
+    detection_vector = sim_out.Detection.signals.values;
+    for j = 1 : length(detection_vector)
+        if detection_vector(j) > 0
+            detection = 1;
+            break
         end
     end
     
-    if MaxColl~= 0
-        CollisionYesNo=1;
-    else
-        CollisionYesNo=0;
+    % check if the simulation resulted in a collision with the pedestrian
+    collision = 0;
+    collision_vector = sim_out.isCollision.signals.values;
+    for j = 1 : length(collision_vector)   
+        if collision_vector(j) > 0
+            collision = 1;
+            break
+        end
     end
-    disp(CollisionYesNo)
     
-    SimTicToc = toc
-    scenario(i,V+1) = SimTicToc;
+    sim_time = toc
+    
+    results_ProSivic(i,1) = ped_x;
+    results_ProSivic(i,2) = ped_y;
+    results_ProSivic(i,3) = ped_orient;
+    results_ProSivic(i,4) = ped_speed;
+    results_ProSivic(i,5) = car_speed;
+    results_ProSivic(i,6) = min_dist;
+    results_ProSivic(i,7) = min_ttc;
+    results_ProSivic(i,8) = min_dist_awa;
+    results_ProSivic(i,9) = detection;
+    results_ProSivic(i,10) = collision;
+      
+    results_PreScan(i,6) = min_dist;
+    results_PreScan(i,7) = min_ttc;
+    results_PreScan(i,8) = detection;
+    results_PreScan(i,9) = detection;
+    results_PreScan(i,10) = collision;
 end
 
-% save to .csv file
-formatOut = 'yyyymmdd_HHMMss_FFF';
+% write results to files
+format = 'yyyymmdd_HHMMss_FFF';
+time_now = datestr(now, format);
+file_PreScan = strcat('output/result_input_PreScan-', time_now, '.csv');
+file_ProSivic = strcat('output/result_input_ProSivic-', time_now, '.csv');
+fid_1 = fopen(file_PreScan, 'w');
+fid_2 = fopen(file_ProSivic, 'w');
+fprintf(fid_1, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n', ['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1' ',' 'OF2' ',' 'OF3'  ',' 'Det' ',' 'Coll']);
+fprintf(fid_1, '\n');
 
-ds=datestr(now,formatOut);
-name = strcat('TestResults_',ds,'.csv');
-fid =  fopen(name, 'w');
-fprintf(fid, '%s  %s  %s  %s  %s  %s \n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'SimulationTime' ',' 'OF1'  ',' 'OF2'  ',' 'OF3'  ',' 'Det' ',' 'Col']);
-fprintf(fid, '\n');
 clear EC
-EC(:,1:6)=scenario;
-EC(:,7)=BestDist2;
-EC(:,8)=TTCMIN;
-EC(:,9)=BestDistPAWA;
-EC(:,10)=Det;
-EC(:,11)=CollisionYesNo;
+EC(:, 1:10) = results_PreScan;
 clear a;
-for i=1:size(EC,1)
-    a(:,i)=EC(i,:);
+
+for i = 1 : size(EC, 1)
+    a(:, i) = EC(i, :);
 end
-fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d \n', a);
+
+fprintf(fid_1, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d \n', a);
+
+fprintf(fid_2, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1' ',' 'OF2' ',' 'OF3'  ',' 'Det' ',' 'Coll']);
+fprintf(fid_2, '\n');
+
+clear EC
+EC(:,1:10) = results_ProSivic;
+clear a;
+
+for i = 1 : size(EC, 1)
+    a(:, i) = EC(i, :);
+end
+
+fprintf(fid_2, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d \n', a);
+fclose(fid_1);
+fclose(fid_2);
+
+
+% % save to .csv file
+% formatOut = 'yyyymmdd_HHMMss_FFF';
+% 
+% ds=datestr(now,formatOut);
+% name = strcat('TestResults_',ds,'.csv');
+% fid =  fopen(name, 'w');
+% fprintf(fid, '%s  %s  %s  %s  %s  %s \n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'SimulationTime' ',' 'OF1'  ',' 'OF2'  ',' 'OF3'  ',' 'Det' ',' 'Col']);
+% fprintf(fid, '\n');
+% clear EC
+% EC(:,1:6)=scenario;
+% EC(:,7)=BestDist2;
+% EC(:,8)=TTCMIN;
+% EC(:,9)=BestDistPAWA;
+% EC(:,10)=det;
+% EC(:,11)=col;
+% clear a;
+% for i=1:size(EC,1)
+%     a(:,i)=EC(i,:);
+% end
+% fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d \n', a);
