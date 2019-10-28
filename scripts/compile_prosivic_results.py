@@ -5,7 +5,7 @@ from collections import Counter
 import pandas as pd
 import numpy as np
 
-class Configuration:
+class ExpSetup:
 
     def __init__(self, ped_x, ped_y, ped_orient, ped_speed, car_speed, min_dist, min_ttc, min_dist_awa, det, col):
         self.ped_x = ped_x
@@ -19,9 +19,11 @@ class Configuration:
         self.min_ttc_counter = Counter([min_ttc])
         self.min_dist_awa = [min_dist_awa]
         self.min_dist_awa_counter = Counter(([min_dist_awa]))
-        self.detected = [det]
+        self.detection = [det]
         self.collision = [col]
         self.nbr_results = 1
+
+        self.results = Counter([ExpResult(min_dist, min_ttc, min_dist_awa, det, col)])
 
     def __str__(self):
         return "### Scenario (x0P=" + str(self.ped_x) + ", y0P=" + str(self.ped_y) + ", Th0P=" + str(self.ped_orient) + ", v0P=" + str(self.ped_speed) + ", v0C=" + str(self.car_speed) + ") ###"
@@ -33,19 +35,24 @@ class Configuration:
     def __lt__(self, other):
         return self.ped_x < other.ped_x
 
-    def add_result(self, min_dist, min_ttc, min_dest_awa, det, col):
+    def add_result(self, min_dist, min_ttc, min_dist_awa, det, col):
         self.min_dist.append(min_dist)
         self.min_dist_counter.update([min_dist])
         self.min_ttc.append(min_ttc)
         self.min_ttc_counter.update([min_ttc])
-        self.min_dist_awa.append(min_dest_awa)
-        self.min_dist_awa_counter.update([min_dest_awa])
-        self.detected.append(det)
+        self.min_dist_awa.append(min_dist_awa)
+        self.min_dist_awa_counter.update([min_dist_awa])
+        self.detection.append(det)
         self.collision.append(col)
         self.nbr_results += 1
 
+        self.results.update([ExpResult(min_dist, min_ttc, min_dist_awa, det, col)])
+
     def get_nbr_results(self):
         return self.nbr_results
+
+    def get_results(self):
+        return self.results
 
     def get_nbr_unique_results(self):
         unique_list_of1 = []
@@ -91,7 +98,7 @@ class Configuration:
 
     def get_nbr_detections(self):
         sum = 0
-        for res in self.detected:
+        for res in self.detection:
             sum += res
         return sum
 
@@ -125,6 +132,49 @@ class Configuration:
     def get_of1_counter(self):
         return self.min_dist_counter
 
+
+class ExpResult:
+
+    def __init__(self, min_dist, min_ttc, min_dist_awa, det, col):
+        self.min_dist = min_dist
+        self.min_ttc = min_ttc
+        self.min_dist_awa = min_dist_awa
+        self.detection = det
+        self.collision = col
+
+    @property
+    def get_min_dist(self):
+        return self.min_dist
+
+    @property
+    def get_min_ttc(self):
+        return self.min_ttc
+
+    @property
+    def get_min_dist_awa(self):
+        return self.min_dist_awa
+
+    @property
+    def get_detected(self):
+        return self.detection
+
+    @property
+    def get_collision(self):
+        return self.collision
+
+    def __str__(self):
+        return "\tOF1=" + str(self.min_dist) + ", OF2=" + str(self.min_ttc) + ", OF3=" + str(self.min_dist_awa) + ", Detection=" + str(self.detection) + ", Collision=" + str(self.collision)
+
+    def __eq__(self, other):
+        return self.min_dist == other.min_dist and self.min_ttc == other.min_ttc and self.min_dist_awa == other.min_dist_awa \
+               and self.detection == other.detection and self.collision == other.collision
+
+    def __lt__(self, other):
+        return self.min_dist < other.min_dist
+
+    def __hash__(self):
+        return hash((self.min_dist, self.min_ttc, self.min_dist_awa, self.detection, self.collision))
+
 dir_name = 'prosivic_results'
 result_dataframes = []
 scenario_results = []
@@ -133,29 +183,40 @@ for filename in os.listdir(dir_name):
     if filename.endswith(".csv"):
         df = pd.read_csv(dir_name + "\\" + filename)
         for index, row in df.iterrows():
-            conf = Configuration(row['x0P'], row['y0P'], row['Th0P'], row['v0P'], row['v0C'], row['OF1'], row['OF2'], row['OF3'], row['Det'], row['Coll'])
-            if conf not in scenario_results:
-                scenario_results.append(conf)
+            exp_setup = ExpSetup(row['x0P'], row['y0P'], row['Th0P'], row['v0P'], row['v0C'], row['OF1'], row['OF2'], row['OF3'], row['Det'], row['Coll'])
+            if exp_setup not in scenario_results:
+                scenario_results.append(exp_setup)
             else:
                 #print("Adding results to: " + str(conf))
-                i = scenario_results.index(conf)
+                i = scenario_results.index(exp_setup)
                 scenario_results[i].add_result(row['OF1'], row['OF2'], row['OF3'], row['Det'], row['Coll'])
 
-with open('merged_prosivic_results.csv', mode='w') as merged_file:
-    merge_writer = csv.writer(merged_file, delimiter=',')
-    merge_writer.writerow(['x0P', 'y0P', 'Th0P', 'v0P', 'v0C', 'nbr', 'OF1_unique', 'OF1_avg', 'OF1_sd', 'OF2_unique', 'OF2_avg', 'OF2_sd', 'OF3_unique', 'OF3_avg', 'OF3_sd', 'det_true', 'det_false', 'col_true', 'col_false'])
+with open('mode_prosivic_results.csv', mode='w') as merged_file:
+    mode_writer = csv.writer(merged_file, delimiter=',')
+    mode_writer.writerow(['x0P', 'y0P', 'Th0P', 'v0P', 'v0C', 'OF1', 'OF2', 'OF3', 'det', 'col', 'conf'])
 
-    for conf in scenario_results:
-        print(conf)
-        unique_per_of = conf.get_nbr_unique_results()
-        print("\tNumber of results: " + str(conf.get_nbr_results()))
-        print("\tmin_dist:\t\tUnique = " + str(len(unique_per_of["of1"])) + "\tAvg = " + str(conf.get_avg_min_dist()) + "\tSD = " + str(conf.get_sd_min_dist()))
-        print("\t\tCounter min_dist: " + str(conf.min_dist_counter))
-        print("\tmin_ttc:\t\tUnique = " + str(len(unique_per_of["of2"])) + "\tAvg = " + str(conf.get_avg_min_ttc()) + "\tSD = " + str(conf.get_sd_min_ttc()))
-        print("\t\tCounter min_ttc: " + str(conf.min_ttc_counter))
-        print("\tmin_dist_awa:\tUnique = " + str(len(unique_per_of["of3"])) + "\tAvg = " + str(conf.get_avg_min_dist_awa()) + "\tSD = " + str(conf.get_sd_min_dist_awa()))
-        print("\t\tCounter min_dist_awa: " + str(conf.min_dist_awa_counter))
-        print("\tNumber detections: " + str(conf.get_nbr_detections()) + " (out of " + str(conf.get_nbr_results()) + ")")
-        print("\tNumber collisions: " + str(conf.get_nbr_collisions()) + " (out of " + str(conf.get_nbr_results()) + ")")
+    #merge_writer.writerow(['x0P', 'y0P', 'Th0P', 'v0P', 'v0C', 'nbr', 'OF1_unique', 'OF1_avg', 'OF1_sd', 'OF2_unique', 'OF2_avg', 'OF2_sd', 'OF3_unique', 'OF3_avg', 'OF3_sd', 'det_true', 'det_false', 'col_true', 'col_false'])
 
-        merge_writer.writerow([conf.ped_x, conf.ped_y, conf.ped_orient, conf.ped_speed, conf.car_speed, conf.get_nbr_results(), len(unique_per_of["of1"]), conf.get_avg_min_dist(), conf.get_sd_min_dist(), len(unique_per_of["of2"]), conf.get_avg_min_ttc(), conf.get_sd_min_ttc(), len(unique_per_of["of3"]), conf.get_avg_min_dist_awa(), conf.get_sd_min_dist_awa(), conf.get_nbr_detections(), (conf.get_nbr_results()-conf.get_nbr_detections()), conf.get_nbr_collisions(), (conf.get_nbr_results()-conf.get_nbr_collisions())])
+    for exp_setup in scenario_results:
+        print("\n" + str(exp_setup))
+        print("\tNumber of results: " + str(exp_setup.get_nbr_results()))
+        res = exp_setup.get_results()
+        for result, count in res.most_common():
+            print("\t" + str(count) + "x:" + str(result))
+
+        unique_per_of = exp_setup.get_nbr_unique_results()
+        print("\t\t# Result per objective function #")
+        print("\t\tmin_dist:\t\tUnique = " + str(len(unique_per_of["of1"])) + "\tAvg = " + str(exp_setup.get_avg_min_dist()) + "\tSD = " + str(exp_setup.get_sd_min_dist()))
+        print("\t\t\tCounter min_dist: " + str(exp_setup.min_dist_counter))
+        print("\t\tmin_ttc:\t\tUnique = " + str(len(unique_per_of["of2"])) + "\tAvg = " + str(exp_setup.get_avg_min_ttc()) + "\tSD = " + str(exp_setup.get_sd_min_ttc()))
+        print("\t\t\tCounter min_ttc: " + str(exp_setup.min_ttc_counter))
+        print("\t\tmin_dist_awa:\tUnique = " + str(len(unique_per_of["of3"])) + "\tAvg = " + str(exp_setup.get_avg_min_dist_awa()) + "\tSD = " + str(exp_setup.get_sd_min_dist_awa()))
+        print("\t\t\tCounter min_dist_awa: " + str(exp_setup.min_dist_awa_counter))
+        print("\t\tNumber detections: " + str(exp_setup.get_nbr_detections()) + " (out of " + str(exp_setup.get_nbr_results()) + " = " + str(100 * (exp_setup.get_nbr_detections()/exp_setup.get_nbr_results())) + "%)")
+        print("\t\tNumber collisions: " + str(exp_setup.get_nbr_collisions()) + " (out of " + str(exp_setup.get_nbr_results()) + " = " + str(100 * (exp_setup.get_nbr_collisions()/exp_setup.get_nbr_results())) + "%)")
+
+        mode_result = res.most_common(1)[0][0] # this is the most common ExpResult (first element in first tuple in first element in the Counter)
+        conf = (res.most_common(1)[0][1]/exp_setup.get_nbr_results()) # this is the count of the most common results divided by the total number
+
+        mode_writer.writerow([exp_setup.ped_x, exp_setup.ped_y, exp_setup.ped_orient, exp_setup.ped_speed, exp_setup.car_speed, mode_result.min_dist, mode_result.min_ttc, mode_result.min_dist_awa, mode_result.detection, mode_result.collision, conf])
+        #merge_writer.writerow([exp_setup.ped_x, exp_setup.ped_y, exp_setup.ped_orient, exp_setup.ped_speed, exp_setup.car_speed, exp_setup.get_nbr_results(), len(unique_per_of["of1"]), exp_setup.get_avg_min_dist(), exp_setup.get_sd_min_dist(), len(unique_per_of["of2"]), exp_setup.get_avg_min_ttc(), exp_setup.get_sd_min_ttc(), len(unique_per_of["of3"]), exp_setup.get_avg_min_dist_awa(), exp_setup.get_sd_min_dist_awa(), exp_setup.get_nbr_detections(), (exp_setup.get_nbr_results() - exp_setup.get_nbr_detections()), exp_setup.get_nbr_collisions(), (exp_setup.get_nbr_results() - exp_setup.get_nbr_collisions())])
