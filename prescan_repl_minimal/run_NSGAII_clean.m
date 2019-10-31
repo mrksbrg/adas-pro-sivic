@@ -67,37 +67,38 @@ for loops = 1:nbr_runs
         
         % Input ranges for the random initialization:
         % [ped_x; ped_y; ped_orient; ped_speed; car_speed]
-        min_ranges = [x0C - 85; y0C + 2; -140; 1; 1 * 3.6]; 
-        max_ranges = [x0C - 20; y0C + 15; -20; 5; 25 * 3.6];        
+        min_ranges = [car_x0 - 85; car_y0 + 2; -140; 1; 1 * 3.6]; 
+        max_ranges = [car_x0 - 20; car_y0 + 15; -20; 5; 25 * 3.6];        
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% 1. NSGAII: Randomly create an initial population. %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
         time_now = datestr(now, short_time_format);
-        fprintf('%s - Creating initiatial population of size %s\n', time_now, int2str(population_size));
+        fprintf('%s - Creating initial population of size %s\n', time_now, int2str(population_size));
         
         for i = 1:population_size
             
             for j = 1:nbr_inputs
                 % randomly create chromosomes
                 chromosome(i,j) = (min_ranges(j) + (max_ranges(j) - min_ranges(j)) * rand(1));
-            end
+            end           
+               
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 2. Pro-SiVIC: Run a simulation for the initial population. %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
-            % store input values from chromosome in variables used later
+            % use input values from random chromosomes in the first scenarios
             ped_x = chromosome(i,1);
             ped_y = chromosome(i,2);
             ped_orient = chromosome(i,3);
             ped_speed = chromosome(i,4);
             car_speed = chromosome(i,5);
             
-            
-            
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %%% 2. Pro-SiVIC: Run a simulation for the initial population. %%%
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            nbr_simulation_calls = nbr_simulation_calls + 1;   
+            time_now = datestr(now, short_time_format);
+            fprintf('%s - Simulating an individual in the initial population. Number of Pro-SiVIC simulations so far: %s\n', time_now, int2str(nbr_simulation_calls));                
             run_single_scenario
-            nbr_simulation_calls = nbr_simulation_calls + 1;
             
             % check if the simulation resulted in a pedestrian detection
             detection = 0;
@@ -141,6 +142,9 @@ for loops = 1:nbr_runs
         %%% 4. NSGAII: Sort the initial population. %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
+        time_now = datestr(now, short_time_format);
+        fprintf('%s - Sorting the initial population.\n', time_now);                
+                   
         chromosome = non_domination_sort_mod(chromosome, nbr_obj_funcs, nbr_inputs + 2);
         
         time_now = datestr(now, long_time_format);
@@ -173,6 +177,9 @@ for loops = 1:nbr_runs
             %%% 5. NSGAII: Select mates using tournament selection %%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
+            time_now = datestr(now, short_time_format);
+            fprintf('%s - Selecting mates using tournament selection.\n', time_now);
+            
             % Use tournament selection to find to individuals in the mating pool
             pool_size = round(population_size / 2);
             tournament_size = 2;
@@ -187,6 +194,9 @@ for loops = 1:nbr_runs
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%% 6. NSGAII: Perform crossover %%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            time_now = datestr(now, short_time_format);
+            fprintf('%s - Performing crossover.\n', time_now);
             
             for i = 1:N
                 % With 90 % probability perform crossover
@@ -280,6 +290,9 @@ for loops = 1:nbr_runs
                 %%% 7. NSGAII: Insert mutations %%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
+                time_now = datestr(now, short_time_format);
+                fprintf('%s - Inserting mutations.\n', time_now);
+            
                 if rand(1) < 0.5
                     %do mutation
                     delta=[2 2 10 1 1.4];
@@ -308,9 +321,7 @@ for loops = 1:nbr_runs
                         
                         child_2(j) = child_2(j);
                     end
-                end
-                
-                
+                end               
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%% 8. Pro-SiVIC: Run a simulation for child 1. %%%
@@ -323,8 +334,11 @@ for loops = 1:nbr_runs
                 ped_speed = child_1(4);
                 car_speed = child_1(5);
                 
-                run_single_scenario
                 nbr_simulation_calls = nbr_simulation_calls + 1;
+                time_now = datestr(now, short_time_format);
+                fprintf('%s - Simulating a child (#1) among the offspring. Number of Pro-SiVIC simulations so far: %s\n', time_now, int2str(nbr_simulation_calls));
+                
+                run_single_scenario
                           
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%% 9. NSGAII: Evaluate the objective functions for child 1. %%%
@@ -339,7 +353,7 @@ for loops = 1:nbr_runs
                         break
                     end
                 end                
-                child_1(6) = detection; % store the result
+                child_1(:, nbr_inputs + 1) = detection; % store the result
                 
                 % check if the simulation resulted in a collision with the pedestrian
                 collision = 0;
@@ -377,9 +391,11 @@ for loops = 1:nbr_runs
                 ped_speed = child_2(4);
                 car_speed = child_2(5);
                 
-                run_single_scenario
                 nbr_simulation_calls = nbr_simulation_calls + 1;
-
+                time_now = datestr(now, short_time_format);
+                fprintf('%s - Simulating a child (#2) among the offspring. Number of Pro-SiVIC simulations so far: %s\n', time_now, int2str(nbr_simulation_calls));              
+                run_single_scenario
+                
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%% 11. NSGAII: Evaluate the objective functions for child 2. %%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -393,7 +409,7 @@ for loops = 1:nbr_runs
                         break
                     end
                 end                             
-                child_2(6) = detection; % store the result
+                child_2(:, nbr_inputs + 1) = detection; % store the result
                 
                 % check if the simulation resulted in a collision with the pedestrian
                 collision = 0;
@@ -404,7 +420,7 @@ for loops = 1:nbr_runs
                         break
                     end
                 end
-                child_2(:,nbr_inputs + 2) = collision;
+                child_2(:, nbr_inputs + 2) = collision;
                 
                 % calculate the objective functions
                 min_dist = 100; % minimum distance between car and pedestrian
@@ -433,7 +449,7 @@ for loops = 1:nbr_runs
             [main_pop, temp] = size(chromosome);
             [offspring_pop, temp] = size(offspring_chromosome);
             
-            % temp is a dummy variable.
+            % temp is a dummy variable
             clear temp
             
             % intermediate_chromosome is a concatenation of current population and the offspring population.
@@ -448,6 +464,9 @@ for loops = 1:nbr_runs
             %%% 12. NSGAII: Select the best individuals based on elitism and crowding distance. %%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
+            time_now = datestr(now, short_time_format);
+            fprintf('%s - Selecting the best individuals.\n', time_now);
+            
             fprintf(fid, 'Intermediate_Chromosome after sorting\n');
             clear InB
             clear InC
