@@ -2,7 +2,6 @@
 % scenario, finds the time where the distance between the car and the
 % pedestrian is the smallest and returns this value.
 %
-%  Copyright (c) 2019, Raja Ben Abdessalem
 %  Copyright (c) 2019, Markus Borg
 %  All rights reserved.
 %
@@ -43,7 +42,10 @@ results_PreScan = imported_data;
 % initialize result matrix with NaN for all elements
 results_theory = NaN(size(imported_data, 1), 6);
 
-% the center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
+% The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
+% Note that this corresponds to a chassis at x=284.0 in Pro-SiVIC, as the
+% rear axis is the primary point for positioning. To compensate for this,
+% we subtract 1.3 m from xCar in the Simulink model.
 car_x0 = 282.70;
 car_y0 = 301.75;
 

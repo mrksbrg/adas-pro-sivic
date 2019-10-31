@@ -33,7 +33,7 @@
 %  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 %  POSSIBILITY OF SUCH DAMAGE.
 
-for loops = 1 : 5
+for loops = 1:1
     try
         % Initilize the
         mfilepath=fileparts(which('run_NSGAII.m'));
@@ -131,21 +131,33 @@ for loops = 1 : 5
             
             % Decision variables are used to form the objective function.
             
-            chromosome(i,V+2)= sum1;
+            chromosome(i,V+3)= sum1;
             
             % sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
             sum2= TTCMIN; %MinTTC
-            chromosome(i,V+3) = sum2;
+            chromosome(i,V+4) = sum2;
             % sum3= normalizeVal(BestDistPAWA,10,0); %Mindistancebetween P and AWA
             sum3= BestDistPAWA; %Mindistancebetween P and AWA
             % Decision variables are used to form the objective function.
-            chromosome(i,V+4) = sum3;
+            chromosome(i,V+5) = sum3;
+            
+            % check if the simulation resulted in a collision with the pedestrian
+            collision = 0;
+            collision_vector = sim_out.isCollision.signals.values;
+            for j = 1 : length(collision_vector)
+                if collision_vector(j) > 0
+                    collision = 1;
+                    break
+                end
+            end
+            chromosome(i,V+2) = collision;
+            
             
         end
         
         % Sort the initialized population
         
-        chromosome = non_domination_sort_mod(chromosome, M, V+1);
+        chromosome = non_domination_sort_mod(chromosome, M, V+2);
         
         formatOut = 'yyyymmdd_HHMMss_FFF';
         
@@ -157,14 +169,15 @@ for loops = 1 : 5
         fid = fopen(name1, 'w');
         
         fprintf(fid, '\n initial chromosome\n');
-        fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',['x0P' '       ' 'y0P' '        ' 'Th0P' '       ' 'v0P' '      ' 'v0C' '     ' 'Det' '   ' 'OF1' '    ' 'OF2' '   ' 'OF3'  '     ' 'Rank' '    ' 'CD']);
+        fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',['x0P' '       ' 'y0P' '        ' 'Th0P' '       ' 'v0P' '      ' 'v0C' '     ' 'Det' '    ' 'Coll' '   ' 'OF1' '    ' 'OF2' '   ' 'OF3'  '     ' 'Rank' '    ' 'CD' ]);
         fprintf(fid, '\n');
-        EC(:,1:M+V+3)=chromosome;
+        clear EC
+        EC(:,1:M+V+4)=chromosome;
         clear a;
         for i=1:size(EC,1)
             a(:,i)=EC(i,:);
         end
-        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
+        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
         NCSIM=0;
         
         SimTimeUntilNow=toc
@@ -371,17 +384,29 @@ for loops = 1 : 5
                 sum1= BestDist2; %MindistanceToCar
                 % Decision variables are used to form the objective function.
                 
-                child_1(:,V+2)= sum1;
+                child_1(:,V+3)= sum1;
                 
                 %sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
                 sum2= TTCMIN; %MinTTC
                 
-                child_1(:,V+3) = sum2;
+                child_1(:,V+4) = sum2;
                 % sum3= normalizeVal(BestDistPAWA,10,0); %Mindistancebetween P and AWA
                 sum3= BestDistPAWA; %Mindistancebetween P and AWA
                 
                 % Decision variables are used to form the objective function.
-                child_1(:,V+4) = sum3;
+                child_1(:,V+5) = sum3;
+                
+                
+                % check if the simulation resulted in a collision with the pedestrian
+                collision = 0;
+                collision_vector = sim_out.isCollision.signals.values;
+                for j = 1 : length(collision_vector)
+                    if collision_vector(j) > 0
+                        collision = 1;
+                        break
+                    end
+                end
+                child_1(:,V+2) = collision;
                 
                 % child_2(:,V + 1: M + V) = evaluate_objective(child_2, M, V);%%%%%%%%%%%%
                 
@@ -433,17 +458,30 @@ for loops = 1 : 5
                 
                 % Decision variables are used to form the objective function.
                 
-                child_2(:,V+2)= sum1;
+                child_2(:,V+3)= sum1;
                 
                 %sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
                 sum2= TTCMIN; %MinTTC
                 
-                child_2(:,V+3) = sum2;
+                child_2(:,V+4) = sum2;
                 %  sum3= normalizeVal(BestDistPAWA,10,0); %Mindistancebetween P and AWA
                 sum3=BestDistPAWA; %Mindistancebetween P and AWA
                 
                 % Decision variables are used to form the objective function.
-                child_2(:,V+4) = sum3;
+                child_2(:,V+5) = sum3;
+                
+                
+                % check if the simulation resulted in a collision with the pedestrian
+                collision = 0;
+                collision_vector = sim_out.isCollision.signals.values;
+                for j = 1 : length(collision_vector)
+                    if collision_vector(j) > 0
+                        collision = 1;
+                        break
+                    end
+                end
+                child_2(:,V+2) = collision;
+                
                 
                 % Keep proper count and appropriately fill the child variable with all
                 % the generated children for the particular generation.
@@ -462,35 +500,36 @@ for loops = 1 : 5
             % intermediate_chromosome is a concatenation of current population and
             % the offspring population.
             intermediate_chromosome(1:main_pop,:) = chromosome;
-            intermediate_chromosome(main_pop + 1 : main_pop + offspring_pop,1 : M+V+1) = ...
+            intermediate_chromosome(main_pop + 1 : main_pop + offspring_pop,1 : M+V+2) = ...
                 offspring_chromosome;
             
             intermediate_chromosome = ...
-                non_domination_sort_mod(intermediate_chromosome, M, V+1);
+                non_domination_sort_mod(intermediate_chromosome, M, V+2);
             % Perform Selection
             fprintf(fid, 'Intermediate_Chromosome after sorting \n');
             clear InB
             clear InC
             
-            InB(:,1:M+V+3)= intermediate_chromosome;
+            InB(:,1:M+V+4)= intermediate_chromosome;
             clear a;
             for i=1:size(InB,1)
                 a(:,i)=InB(i,:);
             end
-            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
+            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
             
             SimTimeUntilNow=toc
             fprintf(fid, 'SimTimeUntilNow %.3f \n', SimTimeUntilNow);
             
-            chromosome = replace_chromosome(intermediate_chromosome, M, V+1, pop);
+            chromosome = replace_chromosome(intermediate_chromosome, M, V+2, pop);
             
             fprintf(fid, 'selected chromosome \n');
-            InC(:,1:M+V+3)= chromosome;
+            clear InC
+            InC(:,1:M+V+4)= chromosome;
             clear a;
             for i=1:size(InC,1)
                 a(:,i)=InC(i,:);
             end
-            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
+            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
             
             if ~mod(i,100)
                 clc
@@ -506,7 +545,7 @@ for loops = 1 : 5
         for i=1:size(chromosome,1)
             a(:,i)=chromosome(i,:);
         end
-        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %.6f  %.6f  %.6f  %d %.6f \n', a);
+        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
         
         totSimTime=toc
         fprintf(fid, 'totSimTime %.3f \n', totSimTime);

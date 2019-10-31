@@ -1,7 +1,6 @@
 % This script demonstrates reads input parameters from a file and runs the
 % corresponding scenarios in Pro-SiVIC.
 %
-%  Copyright (c) 2019, Raja Ben Abdessalem
 %  Copyright (c) 2019, Markus Borg
 %  All rights reserved.
 %
@@ -30,7 +29,8 @@
 mfilepath = fileparts(which('run_from_file.m'));
 addpath(fullfile(mfilepath,'/Functions'));
 addpath(fullfile(mfilepath,'/GA'));
-
+short_time_format = 'yyyymmdd_HHMMss';
+long_time_format = 'yyyymmdd_HHMMss_FFF';
 sivic_input = 1;
 imported_data = importdata('input/sivic_input_1.csv', ',');
 results_PreScan = imported_data;
@@ -42,8 +42,10 @@ results_truth = NaN(size(imported_data, 1), 6) * -1;
 x0_car = 282.70;
 y0_car = 301.75;
 
-for repetition = 1 : 10
-    disp(repetition)
+nbr_iterations = 1;
+for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Simulink, we might want to run multiple times
+    time_now = datestr(now, short_time_format);
+    fprintf('%s - Starting iteration %s out of %s\n', time_now, int2str(iteration), int2str(nbr_iterations));
     for i = 1 : size(imported_data,1)
         tic
         
@@ -190,13 +192,14 @@ for repetition = 1 : 10
         results_truth(i,5) = car_speed;
         results_truth(i,6) = true_min_dist;
     end
-    
-    format = 'yyyymmdd_HHMMss_FFF';
-    time_now = datestr(now, format);
-    
+        
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Print Pro-SiVIC results %%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    time_now = datestr(now, short_time_format);
+    fprintf('%s - Iteration complete, writing results to file\n' , time_now);
+
     file_ProSivic = strcat('output/result_input_ProSivic-', time_now, '.csv')
     fid_2 = fopen(file_ProSivic, 'w');
     
