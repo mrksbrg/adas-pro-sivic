@@ -50,6 +50,7 @@ for loops = 1:nbr_runs
         
         sim_time = 10;
         Fn_MiLTester_SetSimulationTime(sim_time);
+        tic
         start_time = now;
         nbr_simulation_calls = 0;
            
@@ -162,12 +163,12 @@ for loops = 1:nbr_runs
         end
         fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
         
-        cumulative_execution_time = toc
+        cumulative_execution_time = toc;
         nbr_generations = 0;
         
         while cumulative_execution_time < 9000 %150min
-            cumulative_execution_time = toc
-            fprintf(fid, 'SimTimeUntilNow %.3f \n', cumulative_execution_time);
+            cumulative_execution_time = toc;
+            fprintf(fid, 'Cumulative execution time: %.3f\n', cumulative_execution_time);
             nbr_generations = nbr_generations + 1;
             fprintf(fid, '\n Total number of times we call the sim until now = %d \n', nbr_simulation_calls);
             fprintf(fid, '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n');
@@ -478,7 +479,7 @@ for loops = 1:nbr_runs
             end
             fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
             
-            cumulative_execution_time = toc
+            cumulative_execution_time = toc;
             fprintf(fid, 'Cumulative execution time: %.3f \n', cumulative_execution_time);
             
             chromosome = replace_chromosome(intermediate_chromosome, nbr_obj_funcs, nbr_inputs+2, population_size);
@@ -506,8 +507,8 @@ for loops = 1:nbr_runs
         end
         fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
         
-        totSimTime=toc
-        fprintf(fid, 'totSimTime %.3f \n', totSimTime);
+        cumulative_sim_time = toc;
+        fprintf(fid, 'totSimTime %.3f \n', cumulative_sim_time);
         fprintf(fid, '\n Total number of Pro-SiVIC simulations within the time budget = %d\n', nbr_simulation_calls);
                
         display(strcat('Total execution time = ',num2str(round((now - start_time) * (24 * 60))), 'min'));
