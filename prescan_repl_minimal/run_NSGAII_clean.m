@@ -33,6 +33,8 @@
 %  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 %  POSSIBILITY OF SUCH DAMAGE.
 
+clear
+
 nbr_runs = 1; % number of NSGAII runs to perform
 for loops = 1:nbr_runs
     try
@@ -40,32 +42,32 @@ for loops = 1:nbr_runs
         %%%%%%%%%%%%%%%%%%%%%%
         %%% INITIALIZATION %%%
         %%%%%%%%%%%%%%%%%%%%%%
-
+        
         mfilepath = fileparts(which('run_NSGAII.m'));
         addpath(fullfile(mfilepath,'/Functions'));
         addpath(fullfile(mfilepath,'/GA'));
-        load_system(fullfile(mfilepath,'/pedestrian_detection_system.slx'));     
+        load_system(fullfile(mfilepath,'/pedestrian_detection_system.slx'));
         short_time_format = 'yyyymmdd_HHMMss';
         long_time_format = 'yyyymmdd_HHMMss_FFF';
         
         % initialize timers
         sim_time = 10;
-        Fn_MiLTester_SetSimulationTime(sim_time);
+        %Fn_MiLTester_SetSimulationTime(sim_time);
         tic
         start_time = now;
         nbr_simulation_calls = 0;
-        time_budget = 3600; % 9000 % 150 min
+        time_budget = 600; % 9000 % 150 min
         
         % initalize search parameters
         nbr_obj_funcs = 3;
         nbr_inputs = 5;
-           
+        
         % configure the genetic algorithm
         population_size = 10;
         nbr_mutations = 20;
         chromosome = NaN(size(population_size, nbr_inputs)); % this is the start
         best_output = NaN(size(population_size, nbr_inputs)); % this will contain the result
-                
+        
         % The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75).
         % Note that this corresponds to a chassis at x=284.0 in Pro-SiVIC, as the
         % rear axis is the primary point for positioning. To compensate for this,
@@ -75,13 +77,13 @@ for loops = 1:nbr_runs
         
         % Input ranges for the random initialization:
         % [ped_x; ped_y; ped_orient; ped_speed; car_speed]
-        min_ranges = [car_x0 - 85; car_y0 + 2; -140; 1; 1 * 3.6]; 
-        max_ranges = [car_x0 - 20; car_y0 + 15; -20; 5; 25 * 3.6];        
+        min_ranges = [car_x0 - 85; car_y0 + 2; -140; 1; 1 * 3.6];
+        max_ranges = [car_x0 - 20; car_y0 + 15; -20; 5; 25 * 3.6];
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% 1. NSGAII: Randomly create an initial population. %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
+        
         time_now = datestr(now, short_time_format);
         fprintf('%s - Creating initial population of size %s\n', time_now,...
             int2str(population_size));
@@ -91,8 +93,8 @@ for loops = 1:nbr_runs
             for j = 1:nbr_inputs
                 % randomly create chromosomes
                 chromosome(i,j) = (min_ranges(j) + (max_ranges(j) - min_ranges(j)) * rand(1));
-            end           
-               
+            end
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%% 2. Pro-SiVIC: Run simulations for the initial population. %%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,10 +106,10 @@ for loops = 1:nbr_runs
             ped_speed = chromosome(i,4);
             car_speed = chromosome(i,5);
             
-            nbr_simulation_calls = nbr_simulation_calls + 1;   
+            nbr_simulation_calls = nbr_simulation_calls + 1;
             time_now = datestr(now, short_time_format);
             fprintf('%s - Simulating an individual in the initial population. Number of Pro-SiVIC simulations so far: %s\n',...
-                time_now, int2str(nbr_simulation_calls));                
+                time_now, int2str(nbr_simulation_calls));
             run_single_scenario
             
             % check if the simulation resulted in a pedestrian detection
@@ -118,7 +120,7 @@ for loops = 1:nbr_runs
                     detection = 1;
                     break
                 end
-            end      
+            end
             chromosome(i, nbr_inputs + 1) = detection; % store the result
             
             % check if the simulation resulted in a collision with the pedestrian
@@ -141,8 +143,8 @@ for loops = 1:nbr_runs
             min_ttc = 4; % minimum time to collision according to PDS
             min_dist_awa = 50; % minimum distance to acute warning area
             [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
-
-            chromosome(i, nbr_inputs + 3) = min_dist;     
+            
+            chromosome(i, nbr_inputs + 3) = min_dist;
             chromosome(i, nbr_inputs + 4) = min_ttc;
             chromosome(i, nbr_inputs + 5) = min_dist_awa;
             
@@ -153,12 +155,12 @@ for loops = 1:nbr_runs
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         time_now = datestr(now, short_time_format);
-        fprintf('%s - Sorting the initial population.\n', time_now);                
-                   
+        fprintf('%s - Sorting the initial population.\n', time_now);
+        
         chromosome = non_domination_sort_mod(chromosome, nbr_obj_funcs, nbr_inputs + 2);
         
         time_now = datestr(now, long_time_format);
-        filename = strcat('output/results_NSGAII_', time_now, '.txt');      
+        filename = strcat('output/results_NSGAII_', time_now, '.txt');
         fid = fopen(filename, 'w');
         
         fprintf(fid, '\nInitial chromosome:\n');
@@ -184,7 +186,7 @@ for loops = 1:nbr_runs
             fprintf(fid, '\n Total number of times we call the sim until now = %d \n', nbr_simulation_calls);
             fprintf(fid, '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n');
             fprintf(fid, 'Generation Number = %d \n', nbr_generations);
-                    
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%% 5. NSGAII: Select mates using tournament selection %%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -199,7 +201,7 @@ for loops = 1:nbr_runs
             
             [N, m] = size(parent_chromosome);
             clear m
-            counter = 1; % this counter puts children in the right index          
+            counter = 1; % this counter puts children in the right index
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%% 6. NSGAII: Perform crossover %%%
@@ -293,16 +295,16 @@ for loops = 1:nbr_runs
                         child_1(j) = parent_1(j);
                         
                         child_2(j) = parent_2(j);
-                    end                 
+                    end
                 end
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%% 7. NSGAII: Insert mutations %%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+                
                 time_now = datestr(now, short_time_format);
                 fprintf('%s - Inserting mutations.\n', time_now);
-            
+                
                 if rand(1) < 0.5
                     %do mutation
                     delta=[2 2 10 1 1.4];
@@ -331,7 +333,7 @@ for loops = 1:nbr_runs
                         
                         child_2(j) = child_2(j);
                     end
-                end               
+                end
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%% 8. Pro-SiVIC: Run a simulation for child 1. %%%
@@ -350,7 +352,7 @@ for loops = 1:nbr_runs
                     time_now, int2str(nbr_simulation_calls));
                 
                 run_single_scenario
-                          
+                
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%% 9. NSGAII: Evaluate the objective functions for child 1. %%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -363,7 +365,7 @@ for loops = 1:nbr_runs
                         detection = 1;
                         break
                     end
-                end                
+                end
                 child_1(:, nbr_inputs + 1) = detection; % store the result
                 
                 % check if the simulation resulted in a collision with the pedestrian
@@ -382,15 +384,15 @@ for loops = 1:nbr_runs
                 min_ttc = 4; % minimum time to collision according to PDS
                 min_dist_awa = 50; % minimum distance to acute warning area
                 [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
-
+                
                 % Storing results for child_1 as follows:
                 % child_1(:,nbr_inputs + 1: nbr_obj_funcs + nbr_inputs) = evaluate_objective(child_1, nbr_obj_funcs, nbr_inputs);
                 
                 child_1(:, nbr_inputs + 3) = min_dist;
                 child_1(:, nbr_inputs + 4) = min_ttc;
                 child_1(:, nbr_inputs + 5) = min_dist_awa;
-                                              
-                           
+                
+                
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%% 10. Pro-SiVIC: Run a simulation for child 2. %%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -405,7 +407,7 @@ for loops = 1:nbr_runs
                 nbr_simulation_calls = nbr_simulation_calls + 1;
                 time_now = datestr(now, short_time_format);
                 fprintf('%s - Simulating a child (#2) among the offspring. Number of Pro-SiVIC simulations so far: %s\n',...
-                    time_now, int2str(nbr_simulation_calls));              
+                    time_now, int2str(nbr_simulation_calls));
                 run_single_scenario
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -420,7 +422,7 @@ for loops = 1:nbr_runs
                         detection = 1;
                         break
                     end
-                end                             
+                end
                 child_2(:, nbr_inputs + 1) = detection; % store the result
                 
                 % check if the simulation resulted in a collision with the pedestrian
@@ -439,13 +441,13 @@ for loops = 1:nbr_runs
                 min_ttc = 4; % minimum time to collision according to PDS
                 min_dist_awa = 50; % minimum distance to acute warning area
                 [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
-                             
+                
                 % Storing results for child_2 as follows:
                 % child_2(:,nbr_inputs + 1: nbr_obj_funcs + nbr_inputs) = evaluate_objective(child_2, nbr_obj_funcs, nbr_inputs);
- 
+                
                 child_2(:, nbr_inputs + 3) = min_dist;
-                child_2(:, nbr_inputs + 4) = min_ttc;           
-                child_2(:, nbr_inputs+5) = min_dist_awa;             
+                child_2(:, nbr_inputs + 4) = min_ttc;
+                child_2(:, nbr_inputs+5) = min_dist_awa;
                 
                 % Keep proper count and appropriately fill the child variable with all
                 % the generated children for the particular generation.
@@ -455,6 +457,10 @@ for loops = 1:nbr_runs
                 counter = counter + 2;
                 
             end % end of crossover
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 12. NSGAII: Select the best individuals based on elitism and crowding distance. %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             offspring_chromosome = child;
             
@@ -471,11 +477,7 @@ for loops = 1:nbr_runs
             
             intermediate_chromosome = ...
                 non_domination_sort_mod(intermediate_chromosome, nbr_obj_funcs, nbr_inputs + 2);
-            
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %%% 12. NSGAII: Select the best individuals based on elitism and crowding distance. %%%
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                
+               
             time_now = datestr(now, short_time_format);
             fprintf('%s - Selecting the best individuals.\n', time_now);
             
@@ -510,7 +512,7 @@ for loops = 1:nbr_runs
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         time_now = datestr(now, short_time_format);
-
+        
         fprintf(fid, '\nSolution \n');
         clear best_output;
         for i = 1:size(chromosome, 1)
@@ -521,7 +523,7 @@ for loops = 1:nbr_runs
         cumulative_sim_time = toc;
         fprintf(fid, 'Total execution time %.1f s\n', toc);
         fprintf(fid, '\n Total number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
-               
+        
         fprintf('%s - NSGAII finished. Total execution time: %.1f s\n', time_now, toc);
         fclose(fid);
         

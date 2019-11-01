@@ -25,7 +25,7 @@
 function[out] = Fn_MiLTester_My_Normal_Rnd(miu, sigma)
 persistent hval
 persistent even
-if(even)
+if (even)
     out = hval;
     even = 0;
 else
