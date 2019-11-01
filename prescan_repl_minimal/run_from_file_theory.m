@@ -32,8 +32,8 @@
 %%%%%%%%%%%%%%%%%%%%%%
 
 mfilepath = fileparts(which('run_from_file_theory.m'));
-addpath(fullfile(mfilepath,'/Functions'));
-addpath(fullfile(mfilepath,'/GA'));
+addpath(fullfile(mfilepath,'/utils'));
+addpath(fullfile(mfilepath,'/genetic_algo'));
 long_time_format = 'yyyymmdd_HHMMss_FFF';
 imported_data = importdata('input/test_input.csv', ',');
 sivic_input = 0; % 0 = PreScan input, 1 = Pro-SiVIC input

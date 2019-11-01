@@ -27,8 +27,8 @@
 %  POSSIBILITY OF SUCH DAMAGE.
 
 mfilepath = fileparts(which('run_from_file.m'));
-addpath(fullfile(mfilepath,'/Functions'));
-addpath(fullfile(mfilepath,'/GA'));
+addpath(fullfile(mfilepath,'/utils'));
+addpath(fullfile(mfilepath,'/genetic_algo'));
 short_time_format = 'yyyymmdd_HHMMss';
 long_time_format = 'yyyymmdd_HHMMss_FFF';
 sivic_input = 0;
