@@ -35,7 +35,7 @@ sivic_input = 0;
 imported_data = importdata('input/PreScan_data_1.csv', ',');
 % initialize result matrix with NaN for all elements
 results_ProSivic = NaN(size(imported_data, 1), 10) * -1;
-results_truth = NaN(size(imported_data, 1), 6) * -1;
+results_theory = NaN(size(imported_data, 1), 6) * -1;
 warning off
 
 % The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
@@ -166,13 +166,13 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
             end
         end
         
-        % calculate the minimum distance
-        true_distances = NaN(nbr_sim_steps, 1);
-        true_min_dist = realmax;
+        % calculate the minimum distance in an ideal world
+        theory_distances = NaN(nbr_sim_steps, 1);
+        theory_min_dist = realmax;
         for j = 1:nbr_sim_steps
-            true_distances(j) = sqrt((car_traj(j,1)-ped_traj(j,1))^2 + (car_traj(j,2)-ped_traj(j,2))^2);
-            if true_distances(j) < true_min_dist
-                true_min_dist = true_distances(j);
+            theory_distances(j) = sqrt((car_traj(j,1)-ped_traj(j,1))^2 + (car_traj(j,2)-ped_traj(j,2))^2);
+            if theory_distances(j) < theory_min_dist
+                theory_min_dist = theory_distances(j);
             end
         end
         
@@ -188,12 +188,12 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
         results_ProSivic(i,9) = detection;
         results_ProSivic(i,10) = collision;
         
-        results_truth(i,1) = ped_x;
-        results_truth(i,2) = ped_y;
-        results_truth(i,3) = ped_orient;
-        results_truth(i,4) = ped_speed;
-        results_truth(i,5) = car_speed;
-        results_truth(i,6) = true_min_dist;
+        results_theory(i,1) = ped_x;
+        results_theory(i,2) = ped_y;
+        results_theory(i,3) = ped_orient;
+        results_theory(i,4) = ped_speed;
+        results_theory(i,5) = car_speed;
+        results_theory(i,6) = theory_min_dist;
     end
         
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -210,34 +210,34 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
     fprintf(fid_2, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1' ',' 'OF2' ',' 'OF3'  ',' 'Det' ',' 'Coll']);
     fprintf(fid_2, '\n');
     
-    clear EC
-    EC(:,1:10) = results_ProSivic;
-    clear a;
+    clear tmp_results
+    tmp_results(:, 1:10) = results_ProSivic;
+    clear final_results;
     
-    for i = 1 : size(EC, 1)
-        a(:, i) = EC(i, :);
+    for i = 1:size(tmp_results, 1)
+        final_results(:, i) = tmp_results(i, :);
     end
     
-    fprintf(fid_2, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d \n', a);  
+    fprintf(fid_2, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d \n', final_results);  
     fclose(fid_2);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Print theoretical results %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    file_truth = strcat('output/results_theory-', time_now, '.csv');
-    fid_3 = fopen(file_truth, 'w');
+    file_theory = strcat('output/results_theory-', time_now, '.csv');
+    fid_3 = fopen(file_theory, 'w');
     
     fprintf(fid_3, '%s\n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1_truth']);
     
-    clear EC
-    EC(:,1:6) = results_truth;
-    clear a;
+    clear tmp_results
+    tmp_results(:,1:6) = results_theory;
+    clear final_results
     
-    for i = 1 : size(EC, 1)
-        a(:, i) = EC(i, :);
+    for i = 1:size(tmp_results, 1)
+        final_results(:, i) = tmp_results(i, :);
     end
     
-    fprintf(fid_3, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f \n', a);
+    fprintf(fid_3, '%.6f,%.6f,%.6f,%.6f,%.6f,%.6f \n', final_results);
     fclose(fid_3);
     
 end
