@@ -31,18 +31,21 @@ addpath(fullfile(mfilepath,'/Functions'));
 addpath(fullfile(mfilepath,'/GA'));
 short_time_format = 'yyyymmdd_HHMMss';
 long_time_format = 'yyyymmdd_HHMMss_FFF';
-sivic_input = 1;
-imported_data = importdata('input/sivic_input_1.csv', ',');
-results_PreScan = imported_data;
+sivic_input = 0;
+imported_data = importdata('input/PreScan_data_1.csv', ',');
 % initialize result matrix with NaN for all elements
 results_ProSivic = NaN(size(imported_data, 1), 10) * -1;
 results_truth = NaN(size(imported_data, 1), 6) * -1;
+warning off
 
-% the center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
-x0_car = 282.70;
-y0_car = 301.75;
+% The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
+% Note that this corresponds to a chassis at x=284.0 in Pro-SiVIC, as the
+% rear axis is the primary point for positioning. To compensate for this,
+% we subtract 1.3 m from xCar in the Simulink model.
+car_x0 = 282.70;
+car_y0 = 301.75;
 
-nbr_iterations = 1;
+nbr_iterations = 2;
 for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Simulink, we might want to run multiple times
     time_now = datestr(now, short_time_format);
     fprintf('%s - Starting iteration %s out of %s\n', time_now, int2str(iteration), int2str(nbr_iterations));
@@ -54,17 +57,17 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
         %%%%%%%%%%%%%%%%%%%%%%%%%%
         
         if sivic_input == 0 % convert input values if they come from PreScan
-            x0_ped_PreScan = imported_data(i,1); % x of the pedestrian
-            y0_ped_PreScan = imported_data(i,2); % x of the pedestrian
-            orient_ped_PreScan = imported_data(i,3); % orientation of the pedestrian
-            v_ped_PreScan = imported_data(i,4); % speed of the pedestrian in m/s
-            v_car_PreScan = imported_data(i,5); % speed of the car in m/s
+            ped_x0_PreScan = imported_data(i,1); % x of the pedestrian
+            ped_y0_PreScan = imported_data(i,2); % x of the pedestrian
+            ped_orient_PreScan = imported_data(i,3); % orientation of the pedestrian
+            ped_v_PreScan = imported_data(i,4); % speed of the pedestrian in m/s
+            car_v_PreScan = imported_data(i,5); % speed of the car in m/s
             
-            ped_x = x0_car - x0_ped_PreScan;
-            ped_y = y0_car + (50 - y0_ped_PreScan);
-            ped_orient = -180 + orient_ped_PreScan;
-            ped_speed = v_ped_PreScan;
-            car_speed = 3.6 * v_car_PreScan;
+            ped_x = car_x0 - ped_x0_PreScan;
+            ped_y = car_y0 + (50 - ped_y0_PreScan);
+            ped_orient = -180 + ped_orient_PreScan;
+            ped_speed = ped_v_PreScan;
+            car_speed = 3.6 * car_v_PreScan;
             
         else % otherwise read them directly from file
             ped_x = imported_data(i,1); % x of the pedestrian
@@ -126,8 +129,8 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
         car_traj = NaN(nbr_sim_steps, 2);
         
         % car start position
-        car_traj(1,1) = x0_car;
-        car_traj(1,2) = y0_car;
+        car_traj(1,1) = car_x0;
+        car_traj(1,2) = car_y0;
         car_step_length = (car_speed / 3.6) * sim_time_step;
         for j = 2:nbr_sim_steps
             car_traj(j,1) = car_traj(j-1,1) - car_step_length;
@@ -200,6 +203,7 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
     time_now = datestr(now, short_time_format);
     fprintf('%s - Iteration complete, writing results to file\n' , time_now);
 
+    time_now = datestr(now, long_time_format);
     file_ProSivic = strcat('output/result_input_ProSivic-', time_now, '.csv')
     fid_2 = fopen(file_ProSivic, 'w');
     
