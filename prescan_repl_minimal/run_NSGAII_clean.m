@@ -50,8 +50,6 @@ for loops = 1:nbr_runs
     long_time_format = 'yyyymmdd_HHMMss_FFF';
     
     % initialize timers
-    sim_time = 10;
-    %Fn_MiLTester_SetSimulationTime(sim_time);
     tic
     start_time = now;
     nbr_simulation_calls = 0;
@@ -282,18 +280,18 @@ for loops = 1:nbr_runs
                 child_1 = [];
                 child_2 = [];
                 % Select the first parent
-                parent_1 = round(N*rand(1));
+                parent_1 = round(N * rand(1));
                 if parent_1 < 1
                     parent_1 = 1;
                 end
                 % Select the second parent
-                parent_2 = round(N*rand(1));
+                parent_2 = round(N * rand(1));
                 if parent_2 < 1
                     parent_2 = 1;
                 end
                 % Make sure both the parents are not the same.
                 while isequal(parent_chromosome(parent_1, :),parent_chromosome(parent_2, :))
-                    parent_2 = round(N*rand(1));
+                    parent_2 = round(N * rand(1));
                     if parent_2 < 1
                         parent_2 = 1;
                     end
@@ -302,8 +300,7 @@ for loops = 1:nbr_runs
                 parent_1 = parent_chromosome(parent_1, :);
                 parent_2 = parent_chromosome(parent_2, :);
                 for j = 1:nbr_inputs
-                    child_1(j) = parent_1(j);
-                    
+                    child_1(j) = parent_1(j);                   
                     child_2(j) = parent_2(j);
                 end
             end
@@ -318,9 +315,8 @@ for loops = 1:nbr_runs
             if rand(1) < 0.5
                 %do mutation
                 delta=[2 2 10 1 1.4];
-                for j = 1 : nbr_inputs
-                    
-                    child_1(j) = child_1(j) + Fn_MiLTester_My_Normal_Rnd(0, delta(j));
+                for j = 1 : nbr_inputs                  
+                    child_1(j) = child_1(j) + normal_random(0, delta(j));
                     % Make sure that the generated element is within the decision space.
                     if child_1(j) > max_ranges(j)
                         child_1(j) = max_ranges(j);
@@ -328,7 +324,7 @@ for loops = 1:nbr_runs
                         child_1(j) = min_ranges(j);
                     end
                     
-                    child_2(j) = child_2(j) + Fn_MiLTester_My_Normal_Rnd(0, delta(j));
+                    child_2(j) = child_2(j) + normal_random(0, delta(j));
                     % Make sure that the generated element is within the decision space.
                     if child_2(j) > max_ranges(j)
                         child_2(j) = max_ranges(j);
@@ -339,8 +335,7 @@ for loops = 1:nbr_runs
             else
                 %copy
                 for j = 1:nbr_inputs
-                    child_1(j) = child_1(j);
-                    
+                    child_1(j) = child_1(j);                 
                     child_2(j) = child_2(j);
                 end
             end
@@ -474,11 +469,14 @@ for loops = 1:nbr_runs
         
         offspring_chromosome = child;
         
-        [main_pop, temp] = size(chromosome);
-        [offspring_pop, temp] = size(offspring_chromosome);
+        main_pop = size(chromosome, 1);
+        offspring_pop = size(offspring_chromosome, 1);
+        
+        %[main_pop, temp] = size(chromosome);
+        %[offspring_pop, temp] = size(offspring_chromosome);
         
         % temp is a dummy variable
-        clear temp
+        %clear temp
         
         % intermediate_chromosome is a concatenation of current population and the offspring population.
         intermediate_chromosome(1:main_pop, :) = chromosome;
