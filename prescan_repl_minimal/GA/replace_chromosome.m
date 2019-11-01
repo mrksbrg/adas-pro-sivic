@@ -1,4 +1,4 @@
-function f  = replace_chromosome(intermediate_chromosome, M, V,pop)
+function f = replace_chromosome(intermediate_chromosome, M, V, pop)
 
 %% function f  = replace_chromosome(intermediate_chromosome,pro,pop)
 % This function replaces the chromosomes based on rank and crowding

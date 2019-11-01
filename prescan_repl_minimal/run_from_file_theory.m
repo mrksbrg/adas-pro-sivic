@@ -82,7 +82,8 @@ for i = 1:size(imported_data,1)
     
     sim_time_step = 0.005;
     sim_time = 10;
-    min_dist_theory = calc_min_dist_theory(sim_time_step, sim_time, car_x0, car_y0, car_speed, ped_x, ped_y, ped_orient, ped_speed);
+    min_dist_theory = calc_min_dist_theory(sim_time_step, sim_time, car_x0,...
+        car_y0, car_speed, ped_x, ped_y, ped_orient, ped_speed);
     
     % store results for printing to file
     results_theory(i,1) = ped_x;
@@ -101,7 +102,8 @@ end % one individual scenario
 time_now = datestr(now, long_time_format);
 file_theory = strcat('output/results_theory_', time_now, '.csv');
 fid = fopen(file_theory, 'w');
-fprintf(fid, '%s\n',['theory_x0p' ',' 'theory_y0p' ',' 'theory_orient' ',' 'theory_v0p' ',' 'theory_v0c' ',' 'theory_of1']);
+fprintf(fid, '%s\n',['theory_x0p' ',' 'theory_y0p' ',' 'theory_orient' ','...
+    'theory_v0p' ',' 'theory_v0c' ',' 'theory_of1']);
 clear EC
 EC(:,1:6) = results_theory;
 clear a;

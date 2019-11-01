@@ -54,7 +54,7 @@ for loops = 1:nbr_runs
         tic
         start_time = now;
         nbr_simulation_calls = 0;
-        time_budget = 600; % 9000 % 150 min
+        time_budget = 3600; % 9000 % 150 min
            
         population_size = 10; 
         nbr_obj_funcs = 3;
@@ -78,7 +78,8 @@ for loops = 1:nbr_runs
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
         time_now = datestr(now, short_time_format);
-        fprintf('%s - Creating initial population of size %s\n', time_now, int2str(population_size));
+        fprintf('%s - Creating initial population of size %s\n', time_now,...
+            int2str(population_size));
         
         for i = 1:population_size
             
@@ -100,7 +101,8 @@ for loops = 1:nbr_runs
             
             nbr_simulation_calls = nbr_simulation_calls + 1;   
             time_now = datestr(now, short_time_format);
-            fprintf('%s - Simulating an individual in the initial population. Number of Pro-SiVIC simulations so far: %s\n', time_now, int2str(nbr_simulation_calls));                
+            fprintf('%s - Simulating an individual in the initial population. Number of Pro-SiVIC simulations so far: %s\n',...
+                time_now, int2str(nbr_simulation_calls));                
             run_single_scenario
             
             % check if the simulation resulted in a pedestrian detection
@@ -155,7 +157,8 @@ for loops = 1:nbr_runs
         fid = fopen(filename, 'w');
         
         fprintf(fid, '\nInitial chromosome:\n');
-        fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',['ped_x' '       ' 'ped_y' '        ' 'ped_orient' '       ' 'ped_speed' '      ' 'car_speed' '     ' 'detection' '    ' 'collision' '   ' 'of1' '    ' 'of2' '   ' 'of3'  '     ' 'rank' '    ' 'crowding_dist' ]);
+        fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',...
+            ['ped_x' '       ' 'ped_y' '        ' 'ped_orient' '       ' 'ped_speed' '      ' 'car_speed' '     ' 'detection' '    ' 'collision' '   ' 'of1' '    ' 'of2' '   ' 'of3'  '     ' 'rank' '    ' 'crowding_dist' ]);
         fprintf(fid, '\n');
         clear tmp_results
         tmp_results(:, 1:nbr_obj_funcs + nbr_inputs + 4) = chromosome;
@@ -339,7 +342,8 @@ for loops = 1:nbr_runs
                 
                 nbr_simulation_calls = nbr_simulation_calls + 1;
                 time_now = datestr(now, short_time_format);
-                fprintf('%s - Simulating a child (#1) among the offspring. Number of Pro-SiVIC simulations so far: %s\n', time_now, int2str(nbr_simulation_calls));
+                fprintf('%s - Simulating a child (#1) among the offspring. Number of Pro-SiVIC simulations so far: %s\n',...
+                    time_now, int2str(nbr_simulation_calls));
                 
                 run_single_scenario
                           
@@ -396,7 +400,8 @@ for loops = 1:nbr_runs
                 
                 nbr_simulation_calls = nbr_simulation_calls + 1;
                 time_now = datestr(now, short_time_format);
-                fprintf('%s - Simulating a child (#2) among the offspring. Number of Pro-SiVIC simulations so far: %s\n', time_now, int2str(nbr_simulation_calls));              
+                fprintf('%s - Simulating a child (#2) among the offspring. Number of Pro-SiVIC simulations so far: %s\n',...
+                    time_now, int2str(nbr_simulation_calls));              
                 run_single_scenario
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

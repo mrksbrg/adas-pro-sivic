@@ -45,7 +45,7 @@ warning off
 car_x0 = 282.70;
 car_y0 = 301.75;
 
-nbr_iterations = 2;
+nbr_iterations = 1;
 for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Simulink, we might want to run multiple times
     time_now = datestr(now, short_time_format);
     fprintf('%s - Starting iteration %s out of %s\n', time_now, int2str(iteration), int2str(nbr_iterations));
@@ -115,7 +115,7 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
             end
         end
         
-        sim_time = toc
+        sim_time = toc;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% 4. CALCULATE GROUND TRUTH DISTANCES %%%
@@ -204,7 +204,7 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
     fprintf('%s - Iteration complete, writing results to file\n' , time_now);
 
     time_now = datestr(now, long_time_format);
-    file_ProSivic = strcat('output/result_input_ProSivic-', time_now, '.csv')
+    file_ProSivic = strcat('output/results_Pro-SiVIC-', time_now, '.csv');
     fid_2 = fopen(file_ProSivic, 'w');
     
     fprintf(fid_2, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1' ',' 'OF2' ',' 'OF3'  ',' 'Det' ',' 'Coll']);
@@ -224,7 +224,7 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Print theoretical results %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    file_truth = strcat('output/result_input_truth-', time_now, '.csv');
+    file_truth = strcat('output/results_theory-', time_now, '.csv');
     fid_3 = fopen(file_truth, 'w');
     
     fprintf(fid_3, '%s\n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1_truth']);

@@ -23,7 +23,8 @@
 %  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 %  POSSIBILITY OF SUCH DAMAGE.
 
-function [min_dist_theory] = calc_min_dist_theory(sim_time_step, sim_time, car_x0, car_y0, car_speed, ped_x, ped_y, ped_orient, ped_speed)
+function [min_dist_theory] = calc_min_dist_theory(sim_time_step, sim_time,...
+    car_x0, car_y0, car_speed, ped_x, ped_y, ped_orient, ped_speed)
         
 % create vectors matching the simulation time
 nbr_sim_steps = sim_time / sim_time_step;
@@ -71,7 +72,8 @@ end
 distances_theory = NaN(nbr_sim_steps, 1);
 min_dist_theory = realmax;
 for j = 1:nbr_sim_steps
-    distances_theory(j) = sqrt((car_traj(j, 1)-ped_traj(j, 1))^2 + (car_traj(j, 2)-ped_traj(j, 2))^2);
+    distances_theory(j) = sqrt((car_traj(j, 1) - ped_traj(j, 1))^2 +...
+        (car_traj(j, 2) - ped_traj(j, 2))^2);
     if distances_theory(j) < min_dist_theory
         min_dist_theory = distances_theory(j);
     end

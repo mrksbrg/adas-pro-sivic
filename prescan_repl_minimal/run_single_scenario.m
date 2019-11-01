@@ -1,5 +1,5 @@
 % load the static scene
-ret = sendCommand('LOAD', '192.168.1.106', 'prescan_repl_minimal.script')
+ret = sendCommand('LOAD', '192.168.1.106', 'prescan_repl_minimal.script');
 
 % Turn on "cast shadows" for the pedestrian's 19 body parts
 %ret = sendCommand('COMD', '192.168.1.106', 'run toggle_pedestrian_shadows.script')

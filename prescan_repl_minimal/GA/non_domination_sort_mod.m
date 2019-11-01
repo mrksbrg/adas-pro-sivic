@@ -1,7 +1,7 @@
 function f = non_domination_sort_mod(x, M, V)
 
 %% function f = non_domination_sort_mod(x, M, V)
-% This function sort the current popultion based on non-domination. All the
+% This function sorts the current popultion based on non-domination. All the
 % individuals in the first front are given a rank of 1, the second front
 % individuals are assigned rank 2 and so on. After assigning the rank the
 % crowding in each front is calculated.
