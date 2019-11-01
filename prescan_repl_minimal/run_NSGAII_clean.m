@@ -88,9 +88,9 @@ for loops = 1:nbr_runs
                 chromosome(i,j) = (min_ranges(j) + (max_ranges(j) - min_ranges(j)) * rand(1));
             end           
                
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %%% 2. Pro-SiVIC: Run a simulation for the initial population. %%%
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 2. Pro-SiVIC: Run simulations for the initial population. %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             % use input values from random chromosomes in the first scenarios
             ped_x = chromosome(i,1);
@@ -173,7 +173,7 @@ for loops = 1:nbr_runs
         
         while cumulative_execution_time < time_budget
             cumulative_execution_time = toc;
-            fprintf(fid, 'Cumulative execution time: %.3f\n', cumulative_execution_time);
+            fprintf(fid, 'Cumulative execution time: %.1f s \n', cumulative_execution_time);
             nbr_generations = nbr_generations + 1;
             fprintf(fid, '\n Total number of times we call the sim until now = %d \n', nbr_simulation_calls);
             fprintf(fid, '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n');
@@ -487,7 +487,7 @@ for loops = 1:nbr_runs
             fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
             
             cumulative_execution_time = toc;
-            fprintf(fid, 'Cumulative execution time: %.3f \n', cumulative_execution_time);
+            fprintf(fid, 'Cumulative execution time: %.1f s\n', cumulative_execution_time);
             
             chromosome = replace_chromosome(intermediate_chromosome, nbr_obj_funcs, nbr_inputs+2, population_size);
             
