@@ -48,11 +48,13 @@ for loops = 1:nbr_runs
         short_time_format = 'yyyymmdd_HHMMss';
         long_time_format = 'yyyymmdd_HHMMss_FFF';
         
+        % initialize timers
         sim_time = 10;
         Fn_MiLTester_SetSimulationTime(sim_time);
         tic
         start_time = now;
         nbr_simulation_calls = 0;
+        time_budget = 600; % 9000 % 150 min
            
         population_size = 10; 
         nbr_obj_funcs = 3;
@@ -166,7 +168,7 @@ for loops = 1:nbr_runs
         cumulative_execution_time = toc;
         nbr_generations = 0;
         
-        while cumulative_execution_time < 9000 %150min
+        while cumulative_execution_time < time_budget
             cumulative_execution_time = toc;
             fprintf(fid, 'Cumulative execution time: %.3f\n', cumulative_execution_time);
             nbr_generations = nbr_generations + 1;
@@ -500,7 +502,9 @@ for loops = 1:nbr_runs
         %%% Print NSGAII results %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        fprintf(fid, '\n solution \n');
+        time_now = datestr(now, short_time_format);
+
+        fprintf(fid, '\nSolution \n');
         clear a;
         for i = 1:size(chromosome, 1)
             tmp_results_2(:, i) = chromosome(i, :);
@@ -508,10 +512,10 @@ for loops = 1:nbr_runs
         fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
         
         cumulative_sim_time = toc;
-        fprintf(fid, 'totSimTime %.3f \n', cumulative_sim_time);
-        fprintf(fid, '\n Total number of Pro-SiVIC simulations within the time budget = %d\n', nbr_simulation_calls);
+        fprintf(fid, 'Total execution time %.1f s\n', toc);
+        fprintf(fid, '\n Total number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
                
-        display(strcat('Total execution time = ',num2str(round((now - start_time) * (24 * 60))), 'min'));
+        fprintf('%s - NSGAII finished. Total execution time: %.1f s\n', time_now, toc);
         fclose(fid);
         
     catch exc
