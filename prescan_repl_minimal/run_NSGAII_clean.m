@@ -53,7 +53,7 @@ for loops = 1:nbr_runs
     tic
     start_time = now;
     nbr_simulation_calls = 0;
-    time_budget = 600; % 9000 % 150 min
+    time_budget = 9000; % 9000 % 150 min
     
     % initalize search parameters
     nbr_obj_funcs = 3;
@@ -164,7 +164,7 @@ for loops = 1:nbr_runs
     fprintf(fid, '### Initial chromosomes ###\n');
     fprintf(fid, '###########################\n');
     
-    fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',...
+    fprintf(fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n',...
         ['ped_x' ',' 'ped_y' ',' 'ped_orient' ',' 'ped_speed' ',' 'car_speed' ',' 'detection' ',' 'collision' ',' 'of1' ',' 'of2' ',' 'of3'  ',' 'rank' ',' 'crowding_dist' ]);
     fprintf(fid, '\n');
     
@@ -174,7 +174,7 @@ for loops = 1:nbr_runs
     for i=1:size(intermediate_results_a,1)
         best_output(:,i)=intermediate_results_a(i,:);
     end
-    fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', best_output);
+    fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%.6f,%.6f %.6f,%d,%.6f\n', best_output);
     
     cumulative_execution_time = toc;
     nbr_generations = 0;
@@ -186,9 +186,9 @@ for loops = 1:nbr_runs
         fprintf(fid, 'Number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
         
         if nbr_generations < 10
-            fprintf(fid, '\n#####################\n');
+            fprintf(fid, '\n####################\n');
             fprintf(fid, '### GENERATION %d ###\n', nbr_generations);
-            fprintf(fid, '#####################\n');
+            fprintf(fid, '####################\n');
         else
             fprintf(fid, '\n#####################\n');
             fprintf(fid, '### GENERATION %d ###\n', nbr_generations);
@@ -493,7 +493,6 @@ for loops = 1:nbr_runs
         fprintf(fid, '### Sorted intermediate chromosomes ###\n');
         fprintf(fid, '#######################################\n');
         
-        fprintf(fid, 'Intermediate_Chromosome after sorting\n');
         clear intermediate_results_B
         intermediate_results_B(:, 1:nbr_obj_funcs + nbr_inputs + 4) = intermediate_chromosome;
         clear best_output;
@@ -524,20 +523,21 @@ for loops = 1:nbr_runs
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     time_now = datestr(now, short_time_format);
+    fprintf('%s - NSGAII finished. Total execution time: %.1f s\n', time_now, toc);
+    fprintf('%s - Total number of Pro-SiVIC simulations: %d\n', time_now, nbr_simulation_calls);
     
-    fprintf(fid, '\n.\n');
+    cumulative_sim_time = toc;
+    fprintf(fid, '\nTime budget exceeded. Total execution time %.1f s\n', toc);
+    fprintf(fid, '\nTotal number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
+    
+    fprintf(fid, '\n####################\n');
+    fprintf(fid, '### Final result ###\n');
+    fprintf(fid, '####################\n');
+    
     clear best_output;
     for i = 1:size(chromosome, 1)
         best_output(:, i) = chromosome(i, :);
     end
-    fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%.6f,%.6f,%.6f,%d,%.6f\n', best_output);
-    
-    cumulative_sim_time = toc;
-    fprintf(fid, 'Time budget exceeded. Total execution time %.1f s\n', toc);
-    fprintf(fid, '\n Total number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
-    
-    fprintf('%s - NSGAII finished. Total execution time: %.1f s\n', time_now, toc);
-    fprintf('%s - Total number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
-    
+    fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%.6f,%.6f,%.6f,%d,%.6f\n', best_output);    
     fclose(fid);
 end

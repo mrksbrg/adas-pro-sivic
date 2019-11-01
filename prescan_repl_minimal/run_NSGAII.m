@@ -183,7 +183,7 @@ for loops = 1:1
         SimTimeUntilNow=toc
         gim=0;
         
-        while SimTimeUntilNow < 9000 %150min
+        while SimTimeUntilNow < 3600 % 9000 %150min
             SimTimeUntilNow=toc
             fprintf(fid, 'SimTimeUntilNow %.3f \n', SimTimeUntilNow);
             gim=gim+1;
