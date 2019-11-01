@@ -55,11 +55,16 @@ for loops = 1:nbr_runs
         start_time = now;
         nbr_simulation_calls = 0;
         time_budget = 3600; % 9000 % 150 min
-           
-        population_size = 10; 
+        
+        % initalize search parameters
         nbr_obj_funcs = 3;
         nbr_inputs = 5;
-        chromosome = NaN(size(population_size, nbr_inputs));
+           
+        % configure the genetic algorithm
+        population_size = 10;
+        nbr_mutations = 20;
+        chromosome = NaN(size(population_size, nbr_inputs)); % this is the start
+        best_output = NaN(size(population_size, nbr_inputs)); % this will contain the result
                 
         % The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75).
         % Note that this corresponds to a chassis at x=284.0 in Pro-SiVIC, as the
@@ -119,7 +124,7 @@ for loops = 1:nbr_runs
             % check if the simulation resulted in a collision with the pedestrian
             collision = 0;
             collision_vector = sim_out.isCollision.signals.values;
-            for j = 1 : length(collision_vector)
+            for j = 1:length(collision_vector)
                 if collision_vector(j) > 0
                     collision = 1;
                     break
@@ -138,8 +143,8 @@ for loops = 1:nbr_runs
             [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
 
             chromosome(i, nbr_inputs + 3) = min_dist;     
-            chromosome(i,nbr_inputs+4) = min_ttc;
-            chromosome(i,nbr_inputs+5) = min_dist_awa;
+            chromosome(i, nbr_inputs + 4) = min_ttc;
+            chromosome(i, nbr_inputs + 5) = min_dist_awa;
             
         end % the initial population has been evaluated
         
@@ -160,13 +165,14 @@ for loops = 1:nbr_runs
         fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',...
             ['ped_x' '       ' 'ped_y' '        ' 'ped_orient' '       ' 'ped_speed' '      ' 'car_speed' '     ' 'detection' '    ' 'collision' '   ' 'of1' '    ' 'of2' '   ' 'of3'  '     ' 'rank' '    ' 'crowding_dist' ]);
         fprintf(fid, '\n');
-        clear tmp_results
-        tmp_results(:, 1:nbr_obj_funcs + nbr_inputs + 4) = chromosome;
-        clear tmp_results_2;
-        for i=1:size(tmp_results,1)
-            tmp_results_2(:,i)=tmp_results(i,:);
+        
+        clear intermediate_results_a
+        intermediate_results_a(:, 1:nbr_obj_funcs + nbr_inputs + 4) = chromosome;
+        clear best_output
+        for i=1:size(intermediate_results_a,1)
+            best_output(:,i)=intermediate_results_a(i,:);
         end
-        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
+        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', best_output);
         
         cumulative_execution_time = toc;
         nbr_generations = 0;
@@ -190,8 +196,6 @@ for loops = 1:nbr_runs
             pool_size = round(population_size / 2);
             tournament_size = 2;
             parent_chromosome = tournament_selection(chromosome, pool_size, tournament_size);
-            
-            nbr_mutations = 20;
             
             [N, m] = size(parent_chromosome);
             clear m
@@ -476,15 +480,13 @@ for loops = 1:nbr_runs
             fprintf('%s - Selecting the best individuals.\n', time_now);
             
             fprintf(fid, 'Intermediate_Chromosome after sorting\n');
-            clear InB
-            clear InC
-            
-            InB(:, 1:nbr_obj_funcs + nbr_inputs + 4) = intermediate_chromosome;
-            clear a;
-            for i = 1:size(InB,1)
-                tmp_results_2(:, i)=InB(i, :);
+            clear intermediate_results_B
+            intermediate_results_B(:, 1:nbr_obj_funcs + nbr_inputs + 4) = intermediate_chromosome;
+            clear best_output;
+            for i = 1:size(intermediate_results_B,1)
+                best_output(:, i)=intermediate_results_B(i, :);
             end
-            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
+            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', best_output);
             
             cumulative_execution_time = toc;
             fprintf(fid, 'Cumulative execution time: %.1f s\n', cumulative_execution_time);
@@ -492,14 +494,14 @@ for loops = 1:nbr_runs
             chromosome = replace_chromosome(intermediate_chromosome, nbr_obj_funcs, nbr_inputs+2, population_size);
             
             fprintf(fid, 'Selected chromosome\n');
-            clear InC
-            InC(:, 1:nbr_obj_funcs + nbr_inputs + 4) = chromosome;
-            clear a;
-            for i = 1:size(InC, 1)
-                tmp_results_2(:, i) = InC(i, :);
+            clear intermediate_results_C
+            intermediate_results_C(:, 1:nbr_obj_funcs + nbr_inputs + 4) = chromosome;
+            clear best_output;
+            for i = 1:size(intermediate_results_C, 1)
+                best_output(:, i) = intermediate_results_C(i, :);
             end
             
-            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
+            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', best_output);
             
         end % end while X < maximum simulation time
         
@@ -510,11 +512,11 @@ for loops = 1:nbr_runs
         time_now = datestr(now, short_time_format);
 
         fprintf(fid, '\nSolution \n');
-        clear a;
+        clear best_output;
         for i = 1:size(chromosome, 1)
-            tmp_results_2(:, i) = chromosome(i, :);
+            best_output(:, i) = chromosome(i, :);
         end
-        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', tmp_results_2);
+        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', best_output);
         
         cumulative_sim_time = toc;
         fprintf(fid, 'Total execution time %.1f s\n', toc);
