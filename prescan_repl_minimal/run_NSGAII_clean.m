@@ -136,10 +136,11 @@ for loops = 1:nbr_runs
         %%% 3. NSGAII: Evaluate the objective functions for the initial population. %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        % calculate the objective functions
-        min_dist = 100; % minimum distance between car and pedestrian
-        min_ttc = 4; % minimum time to collision according to PDS
-        min_dist_awa = 50; % minimum distance to acute warning area
+        % three objectives to minimize
+        % I. min_dist = minimum distance between pedestrian and car
+        % II. min_ttc = minimum time to collision
+        % III. min_dist_awa = minimum distance between pedestrian and acute warning
+        % area (in front of the car)
         [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
         
         chromosome(i, nbr_inputs + 3) = min_dist;
