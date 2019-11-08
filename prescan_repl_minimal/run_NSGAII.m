@@ -1,7 +1,7 @@
 % This script demonstrates how multi-objective optimization can be used for
 % generation of critical scenarios in simulation-based ADAS testing. The script
 % implements an evolutionary algorithm, NSGA-II, to find the optimal
-% solution for multiple objectives, i.e., the pareto front for the objectives.
+% solution for multiple objectives, i.e., the Pareto front for the objectives.
 %
 % The original algorithm NSGA-II was developed by the Kanpur Genetic
 % Algorithm Labarotary http://www.iitk.ac.in/kangal/
@@ -33,113 +33,347 @@
 %  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 %  POSSIBILITY OF SUCH DAMAGE.
 
-for loops = 1:1
-    try
-        % Initilize the
-        mfilepath=fileparts(which('run_NSGAII.m'));
-        addpath(fullfile(mfilepath,'/utils'));
-        addpath(fullfile(mfilepath,'/genetic_algo'));
-        load_system(fullfile(mfilepath,'/pedestrian_detection_system.slx'));
-        tic
+clear
+warning off % suppress all warnings from the Simulink model
+
+nbr_runs = 5; % number of NSGAII runs to perform
+for loops = 1:nbr_runs
+    
+    %%%%%%%%%%%%%%%%%%%%%%
+    %%% INITIALIZATION %%%
+    %%%%%%%%%%%%%%%%%%%%%%
+    
+    mfilepath = fileparts(which('run_NSGAII.m'));
+    addpath(fullfile(mfilepath,'/utils'));
+    addpath(fullfile(mfilepath,'/genetic_algo'));
+    load_system(fullfile(mfilepath,'/pedestrian_detection_system.slx'));
+    short_time_format = 'yyyymmdd_HHMMss';
+    long_time_format = 'yyyymmdd_HHMMss_FFF';
+    
+    % initialize timers
+    tic
+    start_time = now;
+    nbr_simulation_calls = 0;
+    time_budget = 9000; % 9000 % 150 min
+    
+    % initalize search parameters
+    nbr_obj_funcs = 3;
+    nbr_inputs = 5;
+    
+    % configure the genetic algorithm
+    population_size = 10;
+    nbr_mutations = 20;
+    chromosome = NaN(size(population_size, nbr_inputs)); % this is the start
+    best_output = NaN(size(population_size, nbr_inputs)); % this will contain the result
+    
+    % The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75).
+    % Note that this corresponds to a chassis at x=284.0 in Pro-SiVIC, as the
+    % rear axis is the primary point for positioning. To compensate for this,
+    % we subtract 1.3 m from xCar in the Simulink model.
+    car_x0 = 282.70;
+    car_y0 = 301.75;
+    
+    % Input ranges for the random initialization:
+    % [ped_x; ped_y; ped_orient; ped_speed; car_speed]
+    min_ranges = [car_x0 - 85; car_y0 + 2; -140; 1; 1 * 3.6];
+    max_ranges = [car_x0 - 20; car_y0 + 15; -20; 5; 25 * 3.6];
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% 1. NSGAII: Randomly create an initial population. %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    time_now = datestr(now, short_time_format);
+    fprintf('%s - Creating initial population of size %s\n', time_now,...
+        int2str(population_size));
+    
+    for i = 1:population_size
         
-        ST=10;
-        Fn_MiLTester_SetSimulationTime(ST);
-        MaxAlgorithmIterations=100;
-        SimulationTimeStep=0.005;
-        startTime = rem(now,1);
-        modelRunningTime=0;
-        chromosome=[];
-        b1=4;
-        a1=0;
+        for j = 1:nbr_inputs
+            % randomly create chromosomes
+            chromosome(i,j) = (min_ranges(j) + (max_ranges(j) - min_ranges(j)) * rand(1));
+        end
         
-        pop=10;%20
-        gen=2;%5
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%% 2. Pro-SiVIC: Run simulations for the initial population. %%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        pop = round(pop);
-        gen = round(gen);
+        % use input values from random chromosomes in the first scenarios
+        ped_x = chromosome(i,1);
+        ped_y = chromosome(i,2);
+        ped_orient = chromosome(i,3);
+        ped_speed = chromosome(i,4);
+        car_speed = chromosome(i,5);
         
-        M=3;
-        V=5;
-        x0C=282.70; y0C=301.75; % this is where the center of the Mini Cooper is in Pro-SiVIC
-        min_range=[x0C-85;y0C+2;-140;1;1*3.6]; %[min_x_person; min_y_person;min_orientation_person;min_speed_person;min_speed_car]
-        max_range=[x0C-20;y0C+15;-20;5;25*3.6];%[max_x_person; max_y_person;max_orientation_person;max_speed_person;max_speed_car]
-        % Initialize the population
+        nbr_simulation_calls = nbr_simulation_calls + 1;
+        time_now = datestr(now, short_time_format);
+        fprintf('%s - Simulating an individual in the initial population. Number of Pro-SiVIC simulations so far: %s\n',...
+            time_now, int2str(nbr_simulation_calls));
+        run_single_scenario
         
-        min = min_range;
-        max = max_range;
-        K = M + V;
-        
-        NFIT=0;
-        for i = 1 : pop
-            numpop=i;
-            display(numpop);
-            AA=[];
-            b=0;
-            TotSim=10;
-            for j = 1 : V
-                chromosome(i,j) = (min(j) + (max(j) - min(j))*rand(1));
+        % check if the simulation resulted in a pedestrian detection
+        detection = 0;
+        detection_vector = sim_out.Detection.signals.values;
+        for j = 1:length(detection_vector)
+            if detection_vector(j) > 0
+                detection = 1;
+                break
             end
-            
-            ped_x=chromosome(i,1)
-            ped_y=chromosome(i,2)
-            ped_orient=chromosome(i,3)
-            ped_speed=chromosome(i,4)
-            car_speed=chromosome(i,5)
-            
-            %chromosome(i,V+1:K)=[];
-            sum1 = 0;
-            sum2 = 0;
-            sum3 = 0;
-            D=1;
-            BestDist=60;
-            BestDist2=100;
-            TTCMIN=4;
-            BestDistPAWA=50;
-            MaxD=0;
-            Det=0;
-            
-            %***
-            %%%% Change position and orientation of Pedestrian
-            %%%%%%%%% Generate the experiment %%%%%%%%%
-            run_single_scenario
-            
-            %%%%
-            %Run Simulation
-            
-            %***
-            for w=1:length(sim_out.Detection.signals.values)
-                if sim_out.Detection.signals.values(w)>MaxD
-                    MaxD=sim_out.Detection.signals.values(w);
+        end
+        chromosome(i, nbr_inputs + 1) = detection; % store the result
+        
+        % check if the simulation resulted in a collision with the pedestrian
+        collision = 0;
+        collision_vector = sim_out.isCollision.signals.values;
+        for j = 1:length(collision_vector)
+            if collision_vector(j) > 0
+                collision = 1;
+                break
+            end
+        end
+        chromosome(i, nbr_inputs + 2) = collision;
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%% 3. NSGAII: Evaluate the objective functions for the initial population. %%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        % three objectives to minimize
+        % I. min_dist = minimum distance between pedestrian and car
+        % II. min_ttc = minimum time to collision
+        % III. min_dist_awa = minimum distance between pedestrian and acute warning
+        % area (in front of the car)
+        [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
+        
+        chromosome(i, nbr_inputs + 3) = min_dist;
+        chromosome(i, nbr_inputs + 4) = min_ttc;
+        chromosome(i, nbr_inputs + 5) = min_dist_awa;
+        
+    end % the initial population has been evaluated
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% 4. NSGAII: Sort the initial population. %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    time_now = datestr(now, short_time_format);
+    fprintf('%s - Sorting the initial population.\n', time_now);
+    
+    chromosome = non_domination_sort_mod(chromosome, nbr_obj_funcs, nbr_inputs + 2);
+    
+    time_now = datestr(now, long_time_format);
+    filename = strcat('output/results_NSGAII_', time_now, '.txt');
+    fid = fopen(filename, 'w');
+    
+    fprintf(fid, '###########################\n');
+    fprintf(fid, '### Initial chromosomes ###\n');
+    fprintf(fid, '###########################\n');
+    
+    fprintf(fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n',...
+        ['ped_x' ',' 'ped_y' ',' 'ped_orient' ',' 'ped_speed' ',' 'car_speed' ',' 'detection' ',' 'collision' ',' 'of1' ',' 'of2' ',' 'of3'  ',' 'rank' ',' 'crowding_dist' ]);
+    fprintf(fid, '\n');
+    
+    clear intermediate_results_a
+    intermediate_results_a(:, 1:nbr_obj_funcs + nbr_inputs + 4) = chromosome;
+    clear best_output
+    for i=1:size(intermediate_results_a,1)
+        best_output(:,i)=intermediate_results_a(i,:);
+    end
+    fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%.6f,%.6f %.6f,%d,%.6f\n', best_output);
+    
+    cumulative_execution_time = toc;
+    nbr_generations = 0;
+    
+    while cumulative_execution_time < time_budget
+        cumulative_execution_time = toc;
+        fprintf(fid, '\nTotal execution time: %.1f s\n', cumulative_execution_time);
+        nbr_generations = nbr_generations + 1;
+        fprintf(fid, 'Number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
+        
+        if nbr_generations < 10
+            fprintf(fid, '\n####################\n');
+            fprintf(fid, '### GENERATION %d ###\n', nbr_generations);
+            fprintf(fid, '####################\n');
+        else
+            fprintf(fid, '\n#####################\n');
+            fprintf(fid, '### GENERATION %d ###\n', nbr_generations);
+            fprintf(fid, '#####################\n');
+        end
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%% 5. NSGAII: Select mates using tournament selection %%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        time_now = datestr(now, short_time_format);
+        fprintf('%s - Selecting mates using tournament selection.\n', time_now);
+        
+        % Use tournament selection to find to individuals in the mating pool
+        pool_size = round(population_size / 2);
+        tournament_size = 2;
+        parent_chromosome = tournament_selection(chromosome, pool_size, tournament_size);
+        
+        [N, m] = size(parent_chromosome);
+        clear m
+        counter = 1; % this counter puts children in the right index
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%% 6. NSGAII: Perform crossover %%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        time_now = datestr(now, short_time_format);
+        fprintf('%s - Performing crossover.\n', time_now);
+        
+        for i = 1:N
+            % With 90 % probability perform crossover
+            if rand(1) < 0.9
+                % Initialize the children to be null vector.
+                child_1 = [];
+                child_2 = [];
+                % Select the first parent
+                parent_1 = round(N * rand(1));
+                if parent_1 < 1
+                    parent_1 = 1;
+                end
+                % Select the second parent
+                parent_2 = round(N * rand(1));
+                if parent_2 < 1
+                    parent_2 = 1;
+                end
+                % Make sure both the parents are not the same.
+                while isequal(parent_chromosome(parent_1, :), parent_chromosome(parent_2, :))
+                    parent_2 = round(N*rand(1));
+                    if parent_2 < 1
+                        parent_2 = 1;
+                    end
+                end
+                
+                % Get the chromosome information for each randomly selected parent
+                parent_1 = parent_chromosome(parent_1, :);
+                parent_2 = parent_chromosome(parent_2, :);
+                
+                % Perform crossover for each decision variable in the chromosome.
+                for j = 1:nbr_inputs
+                    % SBX (Simulated Binary Crossover).
+                    u(j) = rand(1);
+                    if u(j) <= 0.5
+                        bq(j) = (2 * u(j))^(1 / (nbr_mutations + 1));
+                    else
+                        bq(j) = (1 / (2 * (1 - u(j))))^(1 / (nbr_mutations + 1));
+                    end
+                    % Generate the jth element of first child
+                    child_1(j) = ...
+                        0.5 * (((1 + bq(j)) * parent_1(j)) + (1 - bq(j)) * parent_2(j));
+                    % Generate the jth element of second child
+                    child_2(j) = ...
+                        0.5 * (((1 - bq(j)) * parent_1(j)) + (1 + bq(j)) * parent_2(j));
+                    % Make sure that the generated element is within the specified
+                    % decision space else set it to the appropriate extrema.
+                    if child_1(j) > max_ranges(j)
+                        child_1(j) = max_ranges(j);
+                    elseif child_1(j) < min_ranges(j)
+                        child_1(j) = min_ranges(j);
+                    end
+                    if child_2(j) > max_ranges(j)
+                        child_2(j) = max_ranges(j);
+                    elseif child_2(j) < min_ranges(j)
+                        child_2(j) = min_ranges(j);
+                    end
+                end
+                
+            else
+                % Initialize the children as null vectors
+                child_1 = [];
+                child_2 = [];
+                % Select the first parent
+                parent_1 = round(N * rand(1));
+                if parent_1 < 1
+                    parent_1 = 1;
+                end
+                % Select the second parent
+                parent_2 = round(N * rand(1));
+                if parent_2 < 1
+                    parent_2 = 1;
+                end
+                % Make sure both the parents are not the same.
+                while isequal(parent_chromosome(parent_1, :),parent_chromosome(parent_2, :))
+                    parent_2 = round(N * rand(1));
+                    if parent_2 < 1
+                        parent_2 = 1;
+                    end
+                end
+                % Get the chromosome information for each randomly selected parent
+                parent_1 = parent_chromosome(parent_1, :);
+                parent_2 = parent_chromosome(parent_2, :);
+                for j = 1:nbr_inputs
+                    child_1(j) = parent_1(j);                   
+                    child_2(j) = parent_2(j);
                 end
             end
-            if MaxD~=0
-                Det=1;
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 7. NSGAII: Insert mutations %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            time_now = datestr(now, short_time_format);
+            fprintf('%s - Inserting mutations.\n', time_now);
+            
+            if rand(1) < 0.5
+                %do mutation
+                delta=[2 2 10 1 1.4];
+                for j = 1 : nbr_inputs                  
+                    child_1(j) = child_1(j) + normal_random(0, delta(j));
+                    % Make sure that the generated element is within the decision space.
+                    if child_1(j) > max_ranges(j)
+                        child_1(j) = max_ranges(j);
+                    elseif child_1(j) < min_ranges(j)
+                        child_1(j) = min_ranges(j);
+                    end
+                    
+                    child_2(j) = child_2(j) + normal_random(0, delta(j));
+                    % Make sure that the generated element is within the decision space.
+                    if child_2(j) > max_ranges(j)
+                        child_2(j) = max_ranges(j);
+                    elseif child_2(j) < min_ranges(j)
+                        child_2(j) = min_ranges(j);
+                    end
+                end
+            else
+                %copy
+                for j = 1:nbr_inputs
+                    child_1(j) = child_1(j);                 
+                    child_2(j) = child_2(j);
+                end
             end
             
-            chromosome(i,V+1)=Det;
-            % TotSim=max(SimStopTime.time);
-            AA=sim_out.SimStopTime.time;
-            b=numel(AA);
-            TotSim=AA(b);
-            [BestDist2,TTCMIN,BestDistPAWA]=calc_obj_funcs(sim_out,ped_orient);
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 8. Pro-SiVIC: Run a simulation for child 1. %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
-            NFIT=NFIT+1;
-            % sum0=normalizeVal(BestDist, 80,0);%MindistanceToCar P is in the AWA
-            % sum1= normalizeVal(BestDist2, 100,0); %MindistanceToCar P is not in the AWA
+            % intitilize a scenario corresponding to child 1
+            ped_x = child_1(1);
+            ped_y = child_1(2);
+            ped_orient = child_1(3);
+            ped_speed = child_1(4);
+            car_speed = child_1(5);
             
-            sum1= BestDist2; %MindistanceToCar
+            nbr_simulation_calls = nbr_simulation_calls + 1;
+            time_now = datestr(now, short_time_format);
+            fprintf('%s - Simulating a child (#1) among the offspring. Number of Pro-SiVIC simulations so far: %s\n',...
+                time_now, int2str(nbr_simulation_calls));
             
-            % Decision variables are used to form the objective function.
+            run_single_scenario
             
-            chromosome(i,V+3)= sum1;
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 9. NSGAII: Evaluate the objective functions for child 1. %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
-            % sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
-            sum2= TTCMIN; %MinTTC
-            chromosome(i,V+4) = sum2;
-            % sum3= normalizeVal(BestDistPAWA,10,0); %Mindistancebetween P and AWA
-            sum3= BestDistPAWA; %Mindistancebetween P and AWA
-            % Decision variables are used to form the objective function.
-            chromosome(i,V+5) = sum3;
+            % check if the simulation resulted in a pedestrian detection
+            detection = 0;
+            detection_vector = sim_out.Detection.signals.values;
+            for j = 1:length(detection_vector)
+                if detection_vector(j) > 0
+                    detection = 1;
+                    break
+                end
+            end
+            child_1(:, nbr_inputs + 1) = detection; % store the result
             
             % check if the simulation resulted in a collision with the pedestrian
             collision = 0;
@@ -150,421 +384,162 @@ for loops = 1:1
                     break
                 end
             end
-            chromosome(i,V+2) = collision;
+            child_1(:, nbr_inputs + 2) = collision; % store the result
+            
+            % calculate the objective functions
+            min_dist = 100; % minimum distance between car and pedestrian
+            min_ttc = 4; % minimum time to collision according to PDS
+            min_dist_awa = 50; % minimum distance to acute warning area
+            [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
+            
+            % Storing results for child_1 as follows:
+            % child_1(:,nbr_inputs + 1: nbr_obj_funcs + nbr_inputs) = evaluate_objective(child_1, nbr_obj_funcs, nbr_inputs);
+            
+            child_1(:, nbr_inputs + 3) = min_dist;
+            child_1(:, nbr_inputs + 4) = min_ttc;
+            child_1(:, nbr_inputs + 5) = min_dist_awa;
             
             
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 10. Pro-SiVIC: Run a simulation for child 2. %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            % intitilize a scenario corresponding to child 2
+            ped_x = child_2(1);
+            ped_y = child_2(2);
+            ped_orient = child_2(3);
+            ped_speed = child_2(4);
+            car_speed = child_2(5);
+            
+            nbr_simulation_calls = nbr_simulation_calls + 1;
+            time_now = datestr(now, short_time_format);
+            fprintf('%s - Simulating a child (#2) among the offspring. Number of Pro-SiVIC simulations so far: %s\n',...
+                time_now, int2str(nbr_simulation_calls));
+            run_single_scenario
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% 11. NSGAII: Evaluate the objective functions for child 2. %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            % check if the simulation resulted in a pedestrian detection
+            detection = 0;
+            detection_vector = sim_out.Detection.signals.values;
+            for j = 1:length(detection_vector)
+                if detection_vector(j) > 0
+                    detection = 1;
+                    break
+                end
+            end
+            child_2(:, nbr_inputs + 1) = detection; % store the result
+            
+            % check if the simulation resulted in a collision with the pedestrian
+            collision = 0;
+            collision_vector = sim_out.isCollision.signals.values;
+            for j = 1 : length(collision_vector)
+                if collision_vector(j) > 0
+                    collision = 1;
+                    break
+                end
+            end
+            child_2(:, nbr_inputs + 2) = collision;
+            
+            % calculate the objective functions
+            min_dist = 100; % minimum distance between car and pedestrian
+            min_ttc = 4; % minimum time to collision according to PDS
+            min_dist_awa = 50; % minimum distance to acute warning area
+            [min_dist, min_ttc, min_dist_awa] = calc_obj_funcs(sim_out, ped_orient);
+            
+            % Storing results for child_2 as follows:
+            % child_2(:,nbr_inputs + 1: nbr_obj_funcs + nbr_inputs) = evaluate_objective(child_2, nbr_obj_funcs, nbr_inputs);
+            
+            child_2(:, nbr_inputs + 3) = min_dist;
+            child_2(:, nbr_inputs + 4) = min_ttc;
+            child_2(:, nbr_inputs+5) = min_dist_awa;
+            
+            % Keep proper count and appropriately fill the child variable with all
+            % the generated children for the particular generation.
+            
+            child(counter, :) = child_1;
+            child(counter+1, :) = child_2;
+            counter = counter + 2;
+            
+        end % end of crossover
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%% 12. NSGAII: Select the best individuals based on elitism and crowding distance. %%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        offspring_chromosome = child;
+        
+        main_pop = size(chromosome, 1);
+        offspring_pop = size(offspring_chromosome, 1);
+        
+        %[main_pop, temp] = size(chromosome);
+        %[offspring_pop, temp] = size(offspring_chromosome);
+        
+        % temp is a dummy variable
+        %clear temp
+        
+        % intermediate_chromosome is a concatenation of current population and the offspring population.
+        intermediate_chromosome(1:main_pop, :) = chromosome;
+        intermediate_chromosome(main_pop + 1 : main_pop + offspring_pop,1 : nbr_obj_funcs + nbr_inputs + 2) = ...
+            offspring_chromosome;
+        
+        intermediate_chromosome = ...
+            non_domination_sort_mod(intermediate_chromosome, nbr_obj_funcs, nbr_inputs + 2);
+        
+        time_now = datestr(now, short_time_format);
+        fprintf('%s - Selecting the best individuals.\n', time_now);
+        
+        fprintf(fid, '\n#######################################\n');
+        fprintf(fid, '### Sorted intermediate chromosomes ###\n');
+        fprintf(fid, '#######################################\n');
+        
+        clear intermediate_results_B
+        intermediate_results_B(:, 1:nbr_obj_funcs + nbr_inputs + 4) = intermediate_chromosome;
+        clear best_output;
+        for i = 1:size(intermediate_results_B,1)
+            best_output(:, i)=intermediate_results_B(i, :);
+        end
+        fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%.6f,%.6f,%.6f,%d,%.6f\n', best_output);
+        
+        chromosome = replace_chromosome(intermediate_chromosome, nbr_obj_funcs, nbr_inputs+2, population_size);
+        
+        fprintf(fid, '\n#########################################\n');
+        fprintf(fid, '### Selected intermediate chromosomes ###\n');
+        fprintf(fid, '#########################################\n');
+        
+        clear intermediate_results_C
+        intermediate_results_C(:, 1:nbr_obj_funcs + nbr_inputs + 4) = chromosome;
+        clear best_output;
+        for i = 1:size(intermediate_results_C, 1)
+            best_output(:, i) = intermediate_results_C(i, :);
         end
         
-        % Sort the initialized population
-        
-        chromosome = non_domination_sort_mod(chromosome, M, V+2);
-        
-        formatOut = 'yyyymmdd_HHMMss_FFF';
-        
-        ds=datestr(now,formatOut);
-        name1 = strcat('NSGAIIResults_',ds,'.txt');
-        name2 = strcat('NSGAIIAfter100Results_',ds,'.txt');
-        name3 = strcat('NSGAIIOracle_',ds,'.txt');
-        
-        fid = fopen(name1, 'w');
-        
-        fprintf(fid, '\n initial chromosome\n');
-        fprintf(fid, '%s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s  %s\n',['x0P' '       ' 'y0P' '        ' 'Th0P' '       ' 'v0P' '      ' 'v0C' '     ' 'Det' '    ' 'Coll' '   ' 'OF1' '    ' 'OF2' '   ' 'OF3'  '     ' 'Rank' '    ' 'CD' ]);
-        fprintf(fid, '\n');
-        clear EC
-        EC(:,1:M+V+4)=chromosome;
-        clear a;
-        for i=1:size(EC,1)
-            a(:,i)=EC(i,:);
-        end
-        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
-        NCSIM=0;
-        
-        SimTimeUntilNow=toc
-        gim=0;
-        
-        while SimTimeUntilNow < 3600 % 9000 %150min
-            SimTimeUntilNow=toc
-            fprintf(fid, 'SimTimeUntilNow %.3f \n', SimTimeUntilNow);
-            gim=gim+1;
-            fprintf(fid, '\n Total number of times we call the sim until now = %d \n', NCSIM);
-            fprintf(fid, '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n');
-            fprintf(fid, 'Generation Number = %d \n',gim);
-            
-            %    display(i);
-            t1NewSol=rem(now,1);
-            timeSimUntilNow=0;
-            pool = round(pop/2);
-            tour = 2;
-            
-            parent_chromosome = tournament_selection(chromosome, pool, tour);
-            
-            mu = 20;
-            mum = 20;
-            %offspring_chromosome = genetic_operator(parent_chromosome,M, V, mu, mum, min_range, max_range);%%%%
-            
-            [N,m] = size(parent_chromosome);
-            clear m
-            p = 1;
-            % Flags used to set if crossover and mutation were actually performed.
-            % was_crossover = 0;
-            % was_mutation = 0;
-            for i = 1 : N
-                % With 90 % probability perform crossover
-                if rand(1) < 0.9
-                    % Initialize the children to be null vector.
-                    child_1 = [];
-                    child_2 = [];
-                    % Select the first parent
-                    parent_1 = round(N*rand(1));
-                    if parent_1 < 1
-                        parent_1 = 1;
-                    end
-                    % Select the second parent
-                    parent_2 = round(N*rand(1));
-                    if parent_2 < 1
-                        parent_2 = 1;
-                    end
-                    % Make sure both the parents are not the same.
-                    while isequal(parent_chromosome(parent_1,:),parent_chromosome(parent_2,:))
-                        parent_2 = round(N*rand(1));
-                        if parent_2 < 1
-                            parent_2 = 1;
-                        end
-                    end
-                    % Get the chromosome information for each randomnly selected
-                    % parents
-                    parent_1 = parent_chromosome(parent_1,:);
-                    parent_2 = parent_chromosome(parent_2,:);
-                    % Perform corssover for each decision variable in the chromosome.
-                    for j = 1 : V
-                        % SBX (Simulated Binary Crossover).
-                        % For more information about SBX refer the enclosed pdf file.
-                        % Generate a random number
-                        u(j) = rand(1);
-                        if u(j) <= 0.5
-                            bq(j) = (2*u(j))^(1/(mu+1));
-                        else
-                            bq(j) = (1/(2*(1 - u(j))))^(1/(mu+1));
-                        end
-                        % Generate the jth element of first child
-                        child_1(j) = ...
-                            0.5*(((1 + bq(j))*parent_1(j)) + (1 - bq(j))*parent_2(j));
-                        % Generate the jth element of second child
-                        child_2(j) = ...
-                            0.5*(((1 - bq(j))*parent_1(j)) + (1 + bq(j))*parent_2(j));
-                        % Make sure that the generated element is within the specified
-                        % decision space else set it to the appropriate extrema.
-                        if child_1(j) > max_range(j)
-                            child_1(j) = max_range(j);
-                        elseif child_1(j) < min_range(j)
-                            child_1(j) = min_range(j);
-                        end
-                        if child_2(j) > max_range(j)
-                            child_2(j) = max_range(j);
-                        elseif child_2(j) < min_range(j)
-                            child_2(j) = min_range(j);
-                        end
-                    end
-                    
-                else
-                    % Initialize the children to be null vector.
-                    child_1 = [];
-                    child_2 = [];
-                    % Select the first parent
-                    parent_1 = round(N*rand(1));
-                    if parent_1 < 1
-                        parent_1 = 1;
-                    end
-                    % Select the second parent
-                    parent_2 = round(N*rand(1));
-                    if parent_2 < 1
-                        parent_2 = 1;
-                    end
-                    % Make sure both the parents are not the same.
-                    while isequal(parent_chromosome(parent_1,:),parent_chromosome(parent_2,:))
-                        parent_2 = round(N*rand(1));
-                        if parent_2 < 1
-                            parent_2 = 1;
-                        end
-                    end
-                    % Get the chromosome information for each randomnly selected
-                    % parents
-                    parent_1 = parent_chromosome(parent_1,:);
-                    parent_2 = parent_chromosome(parent_2,:);
-                    for j = 1 : V
-                        child_1(j)=parent_1(j);
-                        
-                        child_2(j)=parent_2(j);
-                    end
-                    
-                end
-                
-                if rand(1) < 0.5
-                    %do mutation
-                    delta=[2 2 10 1 1.4];
-                    for j = 1 : V
-                        
-                        child_1(j) = child_1(j) + Fn_MiLTester_My_Normal_Rnd(0,delta(j));
-                        % Make sure that the generated element is within the decision
-                        % space.
-                        if child_1(j) > max_range(j)
-                            child_1(j) = max_range(j);
-                        elseif child_1(j) < min_range(j)
-                            child_1(j) = min_range(j);
-                        end
-                        
-                        child_2(j) = child_2(j) + Fn_MiLTester_My_Normal_Rnd(0,delta(j));
-                        % Make sure that the generated element is within the decision
-                        % space.
-                        if child_2(j) > max_range(j)
-                            child_2(j) = max_range(j);
-                        elseif child_2(j) < min_range(j)
-                            child_2(j) = min_range(j);
-                        end
-                    end
-                else
-                    %copy
-                    for j = 1 : V
-                        child_1(j)=child_1(j);
-                        
-                        child_2(j)=child_2(j);
-                    end
-                end
-                % Evaluate the objective function for the offsprings and as before
-                % concatenate the offspring chromosome with objective value.
-                % child_1(:,V + 1: M + V) = evaluate_objective(child_1, M, V);%%%%%%%%%%%%%
-                
-                sum1 = 0;
-                sum2 = 0;
-                sum3 = 0;
-                D=1;
-                BestDist=60;
-                BestDist2=100;
-                TTCMIN=4;
-                BestDistPAWA=50;
-                
-                ped_x=child_1(1);
-                ped_y=child_1(2);
-                ped_orient=child_1(3);
-                ped_speed=child_1(4);
-                car_speed=child_1(5);
-                
-                MaxD=0;
-                Det=0;
-                %***
-                %%%% Change position and orientation of Pedestrian
-                %%%%%%%%% Generate the experiment %%%%%%%%%
-                
-                %%%%
-                %Run Simulation
-                run_single_scenario
-                %***
-                
-                NCSIM=NCSIM+1;
-                for w=1:length(sim_out.Detection.signals.values)
-                    if sim_out.Detection.signals.values(w)>MaxD
-                        MaxD=sim_out.Detection.signals.values(w);
-                    end
-                end
-                if MaxD~=0
-                    Det=1;
-                end
-                
-                child_1(6)=Det;
-                % TotSim=max(SimStopTime.time);
-                AA=sim_out.SimStopTime.time;
-                b=numel(AA);
-                TotSim=AA(b);
-                [BestDist2,TTCMIN,BestDistPAWA] = calc_obj_funcs(sim_out,ped_orient);
-                NFIT=NFIT+1;
-                
-                % sum0=normalizeVal(BestDist, 80,0);%MindistanceToCar P is in the AWA
-                % sum1= normalizeVal(BestDist2, 100,0); %MindistanceToCar P is not in the AWA
-                sum1= BestDist2; %MindistanceToCar
-                % Decision variables are used to form the objective function.
-                
-                child_1(:,V+3)= sum1;
-                
-                %sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
-                sum2= TTCMIN; %MinTTC
-                
-                child_1(:,V+4) = sum2;
-                % sum3= normalizeVal(BestDistPAWA,10,0); %Mindistancebetween P and AWA
-                sum3= BestDistPAWA; %Mindistancebetween P and AWA
-                
-                % Decision variables are used to form the objective function.
-                child_1(:,V+5) = sum3;
-                
-                
-                % check if the simulation resulted in a collision with the pedestrian
-                collision = 0;
-                collision_vector = sim_out.isCollision.signals.values;
-                for j = 1 : length(collision_vector)
-                    if collision_vector(j) > 0
-                        collision = 1;
-                        break
-                    end
-                end
-                child_1(:,V+2) = collision;
-                
-                % child_2(:,V + 1: M + V) = evaluate_objective(child_2, M, V);%%%%%%%%%%%%
-                
-                sum1 = 0;
-                sum2 = 0;
-                sum3 = 0;
-                D=1;
-                BestDist=60;
-                BestDist2=100;
-                TTCMIN=4;
-                BestDistPAWA=50;
-                
-                ped_x=child_2(1);
-                ped_y=child_2(2);
-                ped_orient=child_2(3);
-                ped_speed=child_2(4);
-                car_speed=child_2(5);
-                
-                MaxD=0;
-                Det=0;
-                %***
-                %%%% Change position and orientation of Pedestrian
-                %%%%%%%%% Generate the experiment %%%%%%%%%
-                
-                %%%%
-                %Run Simulation
-                run_single_scenario
-                %***
-                
-                NCSIM=NCSIM+1;
-                for w=1:length(sim_out.Detection.signals.values)
-                    if sim_out.Detection.signals.values(w)>MaxD
-                        MaxD=sim_out.Detection.signals.values(w);
-                    end
-                end
-                if MaxD~=0
-                    Det=1;
-                end
-                child_2(6)=Det;
-                % TotSim=max(SimStopTime.time);
-                AA=sim_out.SimStopTime.time;
-                b=numel(AA);
-                TotSim=AA(b);
-                [BestDist2,TTCMIN,BestDistPAWA]=calc_obj_funcs(sim_out,ped_orient);
-                NFIT=NFIT+1;
-                %sum0=normalizeVal(BestDist, 80,0);%MindistanceToCar P is in the AWA
-                % sum1= normalizeVal(BestDist2, 100,0); %MindistanceToCar P is not in the AWA
-                sum1= BestDist2; %MindistanceToCar
-                
-                % Decision variables are used to form the objective function.
-                
-                child_2(:,V+3)= sum1;
-                
-                %sum2= normalizeVal(TTCMIN, 4,0); %MinTTC
-                sum2= TTCMIN; %MinTTC
-                
-                child_2(:,V+4) = sum2;
-                %  sum3= normalizeVal(BestDistPAWA,10,0); %Mindistancebetween P and AWA
-                sum3=BestDistPAWA; %Mindistancebetween P and AWA
-                
-                % Decision variables are used to form the objective function.
-                child_2(:,V+5) = sum3;
-                
-                
-                % check if the simulation resulted in a collision with the pedestrian
-                collision = 0;
-                collision_vector = sim_out.isCollision.signals.values;
-                for j = 1 : length(collision_vector)
-                    if collision_vector(j) > 0
-                        collision = 1;
-                        break
-                    end
-                end
-                child_2(:,V+2) = collision;
-                
-                
-                % Keep proper count and appropriately fill the child variable with all
-                % the generated children for the particular generation.
-                
-                child(p,:) = child_1;
-                child(p+1,:) = child_2;
-                p = p + 2;
-                
-            end
-            offspring_chromosome = child;
-            
-            [main_pop,temp] = size(chromosome);
-            [offspring_pop,temp] = size(offspring_chromosome);
-            % temp is a dummy variable.
-            clear temp
-            % intermediate_chromosome is a concatenation of current population and
-            % the offspring population.
-            intermediate_chromosome(1:main_pop,:) = chromosome;
-            intermediate_chromosome(main_pop + 1 : main_pop + offspring_pop,1 : M+V+2) = ...
-                offspring_chromosome;
-            
-            intermediate_chromosome = ...
-                non_domination_sort_mod(intermediate_chromosome, M, V+2);
-            % Perform Selection
-            fprintf(fid, 'Intermediate_Chromosome after sorting \n');
-            clear InB
-            clear InC
-            
-            InB(:,1:M+V+4)= intermediate_chromosome;
-            clear a;
-            for i=1:size(InB,1)
-                a(:,i)=InB(i,:);
-            end
-            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
-            
-            SimTimeUntilNow=toc
-            fprintf(fid, 'SimTimeUntilNow %.3f \n', SimTimeUntilNow);
-            
-            chromosome = replace_chromosome(intermediate_chromosome, M, V+2, pop);
-            
-            fprintf(fid, 'selected chromosome \n');
-            clear InC
-            InC(:,1:M+V+4)= chromosome;
-            clear a;
-            for i=1:size(InC,1)
-                a(:,i)=InC(i,:);
-            end
-            fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
-            
-            if ~mod(i,100)
-                clc
-                fprintf('%d generations completed\n',i);
-            end
-            
-        end % end while
-        
-        % Result
-        % Save the result in ASCII text format.
-        fprintf(fid, '\n solution \n');
-        clear a;
-        for i=1:size(chromosome,1)
-            a(:,i)=chromosome(i,:);
-        end
-        fprintf(fid, '%.6f  %.6f  %.6f  %.6f  %.6f  %d  %d  %.6f  %.6f %.6f %d %.6f\n', a);
-        
-        totSimTime=toc
-        fprintf(fid, 'totSimTime %.3f \n', totSimTime);
-        fprintf(fid, '\n Total number of times we call the sim in about 150mn = %d \n', NCSIM);
-        
-        %save solution2.txt totSimTime -ASCII
-        
-        % Visualize
-        % The following is used to visualize the result if objective space
-        % dimension is visualizable.
-        
-        finishTime=rem(now,1);
-        display(strcat('modelRunningTime=',num2str(round((finishTime-startTime)*(24*60))),'mn'));
-        %plot(yPerson.time,yPerson.signals.values,'r');
-        fclose(fid);
-        
-    catch exc
-        display(getReport(exc));
-        display('Error in model test run!');
-    end
+        fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%.6f,%.6f,%.6f,%d,%.6f\n', best_output);
     
+    end % end while X < maximum simulation time
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% Print NSGAII results %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    time_now = datestr(now, short_time_format);
+    fprintf('%s - NSGAII finished. Total execution time: %.1f s\n', time_now, toc);
+    fprintf('%s - Total number of Pro-SiVIC simulations: %d\n', time_now, nbr_simulation_calls);
+    
+    cumulative_sim_time = toc;
+    fprintf(fid, '\nTime budget exceeded. Total execution time %.1f s\n', toc);
+    fprintf(fid, '\nTotal number of Pro-SiVIC simulations: %d\n', nbr_simulation_calls);
+    
+    fprintf(fid, '\n####################\n');
+    fprintf(fid, '### Final result ###\n');
+    fprintf(fid, '####################\n');
+    
+    clear best_output;
+    for i = 1:size(chromosome, 1)
+        best_output(:, i) = chromosome(i, :);
+    end
+    fprintf(fid, '%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%.6f,%.6f,%.6f,%d,%.6f\n', best_output);    
+    fclose(fid);
 end
