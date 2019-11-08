@@ -36,7 +36,7 @@ imported_data = importdata('input/PreScan_data_3.csv', ',');
 % initialize result matrix with NaN for all elements
 results_ProSivic = NaN(size(imported_data, 1), 10) * -1;
 results_theory = NaN(size(imported_data, 1), 6) * -1;
-warning off
+warning off % suppress Simulink warnings
 
 % The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
 % Note that this corresponds to a chassis at x=284.0 in Pro-SiVIC, as the
