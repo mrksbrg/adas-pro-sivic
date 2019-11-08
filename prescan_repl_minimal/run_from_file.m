@@ -32,7 +32,7 @@ addpath(fullfile(mfilepath,'/genetic_algo'));
 short_time_format = 'yyyymmdd_HHMMss';
 long_time_format = 'yyyymmdd_HHMMss_FFF';
 sivic_input = 0;
-imported_data = importdata('input/PreScan_data_1.csv', ',');
+imported_data = importdata('input/PreScan_data_3.csv', ',');
 % initialize result matrix with NaN for all elements
 results_ProSivic = NaN(size(imported_data, 1), 10) * -1;
 results_theory = NaN(size(imported_data, 1), 6) * -1;
@@ -114,9 +114,7 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
                 break
             end
         end
-        
-        sim_time = toc;
-        
+                
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% 4. CALCULATE GROUND TRUTH DISTANCES %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -207,7 +205,7 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
     file_ProSivic = strcat('output/results_Pro-SiVIC-', time_now, '.csv');
     fid_2 = fopen(file_ProSivic, 'w');
     
-    fprintf(fid_2, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1' ',' 'OF2' ',' 'OF3'  ',' 'Det' ',' 'Coll']);
+    fprintf(fid_2, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n',['ped_x' ',' 'ped_y' ',' 'ped_orient' ',' 'ped_speed' ',' 'car_speed' ',' 'of1' ',' 'of2' ',' 'of3'  ',' 'detection' ',' 'collision']);
     fprintf(fid_2, '\n');
     
     clear tmp_results
@@ -227,7 +225,7 @@ for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Sim
     file_theory = strcat('output/results_theory-', time_now, '.csv');
     fid_3 = fopen(file_theory, 'w');
     
-    fprintf(fid_3, '%s\n',['x0P' ',' 'y0P' ',' 'Th0P' ',' 'v0P' ',' 'v0C' ',' 'OF1_truth']);
+    fprintf(fid_3, '%s\n',['ped_x' ',' 'ped_y' ',' 'ped_orient' ',' 'ped_speed' ',' 'car_speed' ',' 'of1_theory']);
     
     clear tmp_results
     tmp_results(:,1:6) = results_theory;
