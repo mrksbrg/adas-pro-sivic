@@ -34,8 +34,9 @@
 %  POSSIBILITY OF SUCH DAMAGE.
 
 clear
+warning off % suppress all warnings from the Simulink model
 
-nbr_runs = 1; % number of NSGAII runs to perform
+nbr_runs = 5; % number of NSGAII runs to perform
 for loops = 1:nbr_runs
     
     %%%%%%%%%%%%%%%%%%%%%%
