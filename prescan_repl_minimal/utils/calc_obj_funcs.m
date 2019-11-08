@@ -57,12 +57,12 @@ for i = 1:nbr_sim_steps
         % Set a constant used to calculate the size of the acute warning
         % area in front of the car. The constant depends on the speed.
         if (car_speed_value * 3.6 < 60 * 3.6)
-            dist_weight = 2.2;
+            width_awa = 2.2;
         elseif (car_speed_value * 3.6  <= 80 * 3.6)
-            dist_weight = 2.2 + 0.0075 * (car_speed_value * 3.6  - 60 * 3.6) *...
+            width_awa = 2.2 + 0.0075 * (car_speed_value * 3.6  - 60 * 3.6) *...
                 (car_speed_value * 3.6  - 60 * 3.6);
         else
-            dist_weight = 3.4;
+            width_awa = 3.4;
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,8 +70,8 @@ for i = 1:nbr_sim_steps
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if ((ped_x_value <= car_x_value - awa_offset) &&...
                 (ped_x_value >= (car_x_value - awa_offset - length_awa)) &&...
-                (ped_y_value < car_y_value + 0.5 * dist_weight) &&...
-                (ped_y_value > car_y_value - 0.5 * dist_weight))
+                (ped_y_value < car_y_value + 0.5 * width_awa) &&...
+                (ped_y_value > car_y_value - 0.5 * width_awa))
             
             dist = sqrt((ped_x_value - car_x_value).^2 + (ped_y_value - car_y_value).^2);
             
@@ -87,7 +87,7 @@ for i = 1:nbr_sim_steps
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         elseif ((ped_x_value <= car_x_value - awa_offset) &&...
                 (ped_x_value >= (car_x_value - awa_offset -length_awa)) &&...
-                (ped_y_value >= car_y_value + 0.5 * dist_weight))
+                (ped_y_value >= car_y_value + 0.5 * width_awa))
             
             dist = sqrt((ped_x_value - car_x_value).^2 + (ped_y_value - car_y_value).^2);
             
@@ -97,7 +97,7 @@ for i = 1:nbr_sim_steps
             end
             
             dist_awa = abs((abs(car_y_value - ped_y_value) + 0.5 *...
-                dist_weight)./sin(ped_orient * 0.0174533)); %distance between P and AWA
+                width_awa)./sin(ped_orient * 0.0174533)); %distance between P and AWA
             
             if dist_awa < min_dist_awa
                 min_dist_awa = dist_awa;
@@ -120,7 +120,7 @@ for i = 1:nbr_sim_steps
                     ped_x_value - awa_offset)./cos(ped_orient * 0.0174533));
             else
                 dist_awa=sqrt((car_x_value - awa_offset - ped_x_value).^2 +...
-                    (car_y_value + 0.5 * dist_weight - ped_y_value).^2);
+                    (car_y_value + 0.5 * width_awa - ped_y_value).^2);
             end
             
             if dist_awa < min_dist_awa
@@ -146,7 +146,7 @@ for i = 1:nbr_sim_steps
             else
                 dist_awa = sqrt((ped_x_value -...
                     (car_x_value - awa_offset - length_awa)).^2 +...
-                    (ped_y_value - car_y_value + 0.5 * dist_weight).^2);
+                    (ped_y_value - car_y_value + 0.5 * width_awa).^2);
             end
             
             if dist_awa < min_dist_awa
