@@ -76,7 +76,10 @@ class ExpSetup:
         return sum / len(self.min_dist)
 
     def get_sd_min_dist(self):
-        return statistics.stdev(self.min_dist)
+        if len(self.min_dist) == 1:
+            return 0
+        else:
+            return statistics.stdev(self.min_dist)
 
     def get_avg_min_ttc(self):
         sum = 0
@@ -85,7 +88,10 @@ class ExpSetup:
         return sum / len(self.min_ttc)
 
     def get_sd_min_ttc(self):
-        return statistics.stdev(self.min_ttc)
+        if len(self.min_ttc) == 1:
+            return 0
+        else:
+            return statistics.stdev(self.min_ttc)
 
     def get_avg_min_dist_awa(self):
         sum = 0
@@ -94,7 +100,10 @@ class ExpSetup:
         return sum / len(self.min_dist_awa)
 
     def get_sd_min_dist_awa(self):
-        return statistics.stdev(self.min_dist_awa)
+        if len(self.min_dist_awa) == 1:
+            return 0
+        else:
+            return statistics.stdev(self.min_dist_awa)
 
     def get_nbr_detections(self):
         sum = 0
@@ -183,13 +192,13 @@ for filename in os.listdir(dir_name):
     if filename.endswith(".csv"):
         df = pd.read_csv(dir_name + "\\" + filename)
         for index, row in df.iterrows():
-            exp_setup = ExpSetup(row['x0P'], row['y0P'], row['Th0P'], row['v0P'], row['v0C'], row['OF1'], row['OF2'], row['OF3'], row['Det'], row['Coll'])
+            exp_setup = ExpSetup(row['ped_x'], row['ped_y'], row['ped_orient'], row['ped_speed'], row['car_speed'], row['of1'], row['of2'], row['of3'], row['detection'], row['collision'])
             if exp_setup not in scenario_results:
                 scenario_results.append(exp_setup)
             else:
                 #print("Adding results to: " + str(conf))
                 i = scenario_results.index(exp_setup)
-                scenario_results[i].add_result(row['OF1'], row['OF2'], row['OF3'], row['Det'], row['Coll'])
+                scenario_results[i].add_result(row['of1'], row['of2'], row['of3'], row['detection'], row['collision'])
 
 with open('mode_prosivic_results.csv', mode='w') as merged_file:
     mode_writer = csv.writer(merged_file, delimiter=',')
