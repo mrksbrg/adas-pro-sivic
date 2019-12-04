@@ -32,20 +32,20 @@ addpath(fullfile(mfilepath,'/genetic_algo'));
 short_time_format = 'yyyymmdd_HHMMss';
 long_time_format = 'yyyymmdd_HHMMss_FFF';
 sivic_input = 0;
-imported_data = importdata('input/PreScan_data_3.csv', ',');
+imported_data = importdata('input/prescan_input_400.csv', ',');
 % initialize result matrix with NaN for all elements
 results_ProSivic = NaN(size(imported_data, 1), 10) * -1;
 results_theory = NaN(size(imported_data, 1), 6) * -1;
 warning off % suppress Simulink warnings
 
 % The center of the Mini Cooper in the Pro-SiVIC scene is (282.70, 301.75)
-% Note that this corresponds to a chassis at x=284.0 in Pro-SiVIC, as the
-% rear axis is the primary point for positioning. To compensate for this,
+% Note that this corresponds to a chassis center at x=284.0 in Pro-SiVIC, as the
+% rear axis is the anchor point for positioning. To compensate for this,
 % we subtract 1.3 m from xCar in the Simulink model.
 car_x0 = 282.70;
 car_y0 = 301.75;
 
-nbr_iterations = 1;
+nbr_iterations = 16;
 for iteration = 1:nbr_iterations % due to package loss between Pro-SiVIC and Simulink, we might want to run multiple times
     time_now = datestr(now, short_time_format);
     fprintf('%s - Starting iteration %s out of %s\n', time_now, int2str(iteration), int2str(nbr_iterations));
