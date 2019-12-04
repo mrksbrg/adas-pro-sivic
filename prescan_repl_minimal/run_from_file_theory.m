@@ -36,7 +36,7 @@ addpath(fullfile(mfilepath,'/utils'));
 addpath(fullfile(mfilepath,'/genetic_algo'));
 long_time_format = 'yyyymmdd_HHMMss_FFF';
 imported_data = importdata('input/test_input.csv', ',');
-sivic_input = 0; % 0 = PreScan input, 1 = Pro-SiVIC input
+sivic_input = 1; % 0 = PreScan input, 1 = Pro-SiVIC input
 results_PreScan = imported_data;
 
 % initialize result matrix with NaN for all elements
@@ -62,8 +62,8 @@ for i = 1:size(imported_data,1)
         ped_v_PreScan = imported_data(i,4); % speed of the pedestrian in m/s
         car_v_PreScan = imported_data(i,5); % speed of the car in m/s
         
-        ped_x = x0_car - ped_x0_PreScan;
-        ped_y = y0_car + (50 - ped_y0_PreScan);
+        ped_x = car_x0 - ped_x0_PreScan;
+        ped_y = car_y0 + (50 - ped_y0_PreScan);
         ped_orient = -180 + ped_orient_PreScan;
         ped_speed = ped_v_PreScan;
         car_speed = 3.6 * car_v_PreScan;
