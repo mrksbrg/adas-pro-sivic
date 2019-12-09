@@ -46,7 +46,8 @@ for loops = 1:nbr_runs
     mfilepath = fileparts(which('run_NSGAII.m'));
     addpath(fullfile(mfilepath,'/utils'));
     addpath(fullfile(mfilepath,'/genetic_algo'));
-    load_system(fullfile(mfilepath,'/pedestrian_detection_system.slx'));
+    %load_system(fullfile(mfilepath,'/pedestrian_detection_system.slx'));
+    load_system(fullfile(mfilepath,'/mock_pedestrian_detection_system.slx'));
     short_time_format = 'yyyymmdd_HHMMss';
     long_time_format = 'yyyymmdd_HHMMss_FFF';
     

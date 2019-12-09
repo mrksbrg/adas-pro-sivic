@@ -36,6 +36,7 @@ ret = sendCommand('COMD', 'localhost', set_ped_speed_cmd);
 %ret = sendCommand('PLAY', 'localhost');
 %ret = sendCommand('TOGGLEPAUSE', 'localhost');
 
-sim_out = sim(fullfile(mfilepath,'/pedestrian_detection_system.slx'));
+%sim_out = sim(fullfile(mfilepath,'/pedestrian_detection_system.slx'));
+sim_out = sim(fullfile(mfilepath,'/mock_pedestrian_detection_system.slx'));
 
 clear mex
