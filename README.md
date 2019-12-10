@@ -20,6 +20,6 @@ The code can be used to get started with DDS communication between Pro-SiVIC and
 The core of the repository.
 Workaround to start DCPSInforRepo: DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242
 
-# utils
+## utils
 Supporting scripts to reproduce our results. Instructions will follow when the paper manuscript has been finished.
 
