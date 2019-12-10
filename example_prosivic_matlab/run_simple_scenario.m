@@ -1,11 +1,6 @@
-% First PreScan replication, straight road
 prev_time = -1;
-
 population_size=20;
-
-%min_r=[20;35;40;1;10]; %[min_x_person; min_y_person;min_orientation_person;min_speed_person;min_speed_car]
 min_r=[-53;-134;38;1;1]; %[min_x_person; min_y_person;min_orientation_person;min_speed_person;min_speed_car]
-%max_r=[85;48;160;5;25];%[max_x_person; max_y_person;max_orientation_person;max_speed_person;max_speed_car]
 max_r=[7;-111;138;5;25];%[max_x_person; max_y_person;max_orientation_person;max_speed_person;max_speed_car]
 V=size(min_r,1);
 
@@ -22,7 +17,7 @@ for i = 1 : population_size
     car_speed = scenario(i,5);
     
     % load the static scene
-    ret = sendCommand('LOAD', 'localhost', 'prescan_repl_1.script');
+    ret = sendCommand('LOAD', 'localhost', 'simple_scene.script');
     
     % set properties of the car (that has cruise control)
     init_car_speed_cmd = ['ego_car/car.SetInitSpeed ' num2str(car_speed)];
@@ -55,41 +50,17 @@ for i = 1 : population_size
     [ped_head, ped_data] = ProSiVIC_DDS('ped_obs','objectobserver');
     [cam_head, cam_data] = ProSiVIC_DDS('ego_car/chassis/dashcam/cam','camera');
     [radar_head, target_data] = ProSiVIC_DDS('radar/radar','radar');
-    %dds_times = [0:1:50];
-    %tcp_times = [0:1:50];
     pause(1)
     
-    while step < nbr_sim_steps
-        %[time_head, time_data] = ProSiVIC_DDS('timeWrapper','time');
-        %dds_times(step) = time_head(1);
-        
-        % Instructions used for debugging
-        %tcp_time = sendCommand ('GETP','localhost','timeWrapper','SimuTime');
-        %tcp_times(step) = str2num(tcp_time);
-        
+    while step < nbr_sim_steps     
         ret = sendCommand('COMD', 'localhost', 'pass 8'); % matching the 0.040 periodicity
         [car_head, car_data] = ProSiVIC_DDS('car_obs','objectobserver');
         [ped_head, ped_data] = ProSiVIC_DDS('ped_obs','objectobserver');
         [cam_head, cam_data] = ProSiVIC_DDS('dashcam/cam','camera');
-        %imshow(cam_data)
         [radar_head, target_data] = ProSiVIC_DDS('radar/radar','radar');
-        
-        % Information that shall be sent to PDS
-        %         ego_car_speed = car_data(7);
-        %         ego_car_orient = car_data(6);
-        %         if radar_head(2) > 0
-        %             ped_dist = target_data(1);
-        %             ped_long_speed = target_data(3);
-        %             ped_azimuth = target_data(2);
-        %         else
-        %             ped_dist = -1;
-        %             ped_long_speed = -1;
-        %             ped_azimuth = -1;
-        %         end
         
         % check three stop criteria
         if ped_head(1) ~= prev_time
-            %disp(step);
             if (car_data(1) > 27)
                 disp("### Stopping simulation: Car drove 100 m")
                 break

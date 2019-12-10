@@ -1,5 +1,5 @@
 % Input: xPerson yPerson tetaPerson vPerson vCar
-mfilepath=fileparts(which('runTest1.m'));
+mfilepath=fileparts(which('run_scenarios_loop.m'));
 
 prev_time = -1; % used to check timestamps in Pro-SiVIC
 population_size=5;
