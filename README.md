@@ -11,16 +11,25 @@ The repository contains four main parts:
 - example_prosivic_simulink: An example of DDS communication between Pro-SiVIC and Simulink blocks.
 
 ## sbst_pedestrian_detection_system
-This is the core component of the repository, demonstrating how NSGA-II can be used to generate critical test scenarios for a pedestrian detection system simulated using Pro-SiVIC. The implementation shows how NSGA-II can be for multi-objective optimization, in this case to generate test scenarios for the given scene that minimize three objective functions:
+This is the core component of the repository, demonstrating how NSGA-II can be used to generate critical test scenarios for a pedestrian detection system simulated using Pro-SiVIC. 
+
+### Pedestrian detection system
+The pedestrian detection system (PDS) under test in the research publication is a proprietary Simulink solution that we cannot publish on GitHub. The PDS uses a combination of computer vision and radar signal characteristics to detect pedestrians in front of the vehicle. To support replication of our work, we provide a mock implementation of the PDS component in Simulink. Our mock implementation provides a random value for the detection (0 or 1) and a constant time to collision (4 s). While the detection value is not used in the objective functions (described next), the constant time to collision will effectively remove one of the three objective functions. 
+
+### Objective functions
+The implementation shows how NSGA-II can be for multi-objective optimization, in this case to generate test scenarios for the given scene that minimize three objective functions:
 1. the minimum distance between the pedestrian and the car (`min_dist`)
 1. the minimum time to collision (`min_ttc`)
-1. the minimum distance between the pedestrian and the "acute warning area" in front of the car (`min_dist_awa`)
+1. the minimum distance between the pedestrian and the *acute warning area* in front of the car (`min_dist_awa`)
 
-Note that all objective functions are considered equally important.
+Note that all objective functions are considered equally important. We refer to the result from optimizing the three objective functions as a *critical scenario*.
+
+### Test input
+To test the pedestrian detection system
 
 The four subfolders contain the following:
 
-- genetic_algo: A refactored version of the original algorithm NSGA-II tailored developed by the Kanpur Genetic Algorithm Labarotary http://www.iitk.ac.in/kangal/ We hope that the refactored version will be easier to understand for non-experts 
+- genetic_algo: A refactored version of the original algorithm NSGA-II tailored for generation of test cases representing critical test scenarios. NSGA-II was originally developed by the Kanpur Genetic Algorithm Labarotary http://www.iitk.ac.in/kangal/ We hope that the refactored version will be easier to understand for non-experts.
 
 Workaround to start DCPSInforRepo: DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242
 
