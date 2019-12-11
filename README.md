@@ -25,7 +25,15 @@ The implementation shows how NSGA-II can be for multi-objective optimization, in
 Note that all objective functions are considered equally important. We refer to the result from optimizing the three objective functions as a *critical scenario*.
 
 ### Test input
-To test the pedestrian detection system
+To test the pedestrian detection system, a simple scene has been implemented in Pro-SiVIC. The scene enables a replication of the solution presented by Ben Abdessalem et al. (2016) implemented in PreScan. The scene contains a car driving on a straight road and a pedestrian crossing the street from the right. There are no objects along the road, and the driving conditions are normal. Test scenarios are created for this scene by setting five independent test parameters within fixed ranges, i.e., the test input:
+
+1. the x coordinate of the pedestrian (`ped_x`) [
+1. the y coordinate of the pedestrian (`ped_y`)
+1. the orientation of the pedestrian (`ped_orient`)
+1. the speed of the pedestrian (`ped_speed`)
+1. the speed of the car (`car_speed`)
+
+
 
 The four subfolders contain the following:
 
@@ -42,3 +50,6 @@ The code can be used to get started with DDS communication between Pro-SiVIC and
 
 ## example_prosivic_simulink
 The code can be used to get started with DDS communication between Pro-SiVIC and Simulink. The code is provided as is, but should be fairly straightforward even without documentation beyond code comments.
+
+## References
+- Ben Abdessalem, R., Nejati, S., Briand, L.C. and Stifter, T. Testing advanced driver assistance systems using multi-objective search and neural networks. In Proceedings of the 31st IEEE/ACM International Conference on Automated Software Engineering (pp. 63-74)., 2016.
