@@ -1,23 +1,22 @@
-% Input: xPerson yPerson tetaPerson vPerson vCar
-mfilepath=fileparts(which('test.m'));
+% Input: xPerson yPerson thetaPerson vPerson vCar
+mfilepath=fileparts(which('run_simple_scenario.m'));
 tic
 prev_time = -1; % used to check timestamps in Pro-SiVIC
 v0C = 70;
-    ped_x = -23;
-    ped_y = -120;
-    ped_orient = 65;
-    ped_speed = 3;
-%     car_speed = 70;
+ped_x = -23;
+ped_y = -120;
+ped_orient = 65;
+ped_speed = 3;
     
-    %*** RUN the Simulation in Pro-SiVIC
-  % load the static scene
-ret = sendCommand('LOAD', 'localhost', 'prescan_repl_1.script');
+%*** RUN the Simulation in Pro-SiVIC
+% load the static scene
+ret = sendCommand('LOAD', 'localhost', 'example_scene.script');
 
 % set properties of the car (that has cruise control)
-% init_car_speed_cmd = ['ego_car/car.SetInitSpeed ' num2str(car_speed)];
-% init_car_speed_limit_cmd = ['ego_car/car.SetInitSpeedLimit ', num2str(car_speed)];
-% ret = sendCommand('COMD', 'localhost', init_car_speed_cmd);
-% ret = sendCommand('COMD', 'localhost', init_car_speed_limit_cmd);
+init_car_speed_cmd = ['ego_car/car.SetInitSpeed ' num2str(car_speed)];
+init_car_speed_limit_cmd = ['ego_car/car.SetInitSpeedLimit ', num2str(car_speed)];
+ret = sendCommand('COMD', 'localhost', init_car_speed_cmd);
+ret = sendCommand('COMD', 'localhost', init_car_speed_limit_cmd);
 
 % set properties for the pedestrian
 init_ped_position_cmd = ['dummy/pedestrian.SetPosition ' num2str(ped_x) num2str(ped_y)]; % skip the Z coordinate, road is ground
@@ -40,8 +39,8 @@ end
 
 ret = sendCommand('PLAY', 'localhost');
 
-sim(fullfile(mfilepath,'/prescan_repl2.slx'));
+sim(fullfile(mfilepath,'/simulink_example.slx'));
 
-    %***
-    SimTicToc=toc
+%***
+SimTicToc=toc
 
