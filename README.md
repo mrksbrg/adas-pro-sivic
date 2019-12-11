@@ -1,5 +1,5 @@
 # adas-pro-sivic
-This repository contains code for search-based software testing of a pedestrian detection system using the virtual prototyping platform Pro-SiVIC. We hope that the example code provided can help future developers and researchers getting started with software testing using Pro-SiVIC. The examples use Data Distribution Service (DDS) for communication between Pro-SiVIC and MATLAB and Simulink, resepctively.
+This repository contains source code for search-based software testing of a pedestrian detection system using the virtual prototyping platform Pro-SiVIC. We hope that the example code provided can help future developers and researchers getting started with software testing using Pro-SiVIC. The examples use Data Distribution Service (DDS) for communication between Pro-SiVIC and MATLAB and Simulink, resepctively.
 
 The corresponding research article is currently in preparation (Dec 2019).
 
