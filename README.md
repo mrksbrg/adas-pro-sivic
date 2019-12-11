@@ -35,13 +35,12 @@ To test the pedestrian detection system, a simple scene has been implemented in 
 
 ### Source code structure
 The main files in the root folder are:
-- run_NSGAII.m: Main file for running NSGA-II to search for test input representing critical scenarios.
-- mock_pedestrian_detection_system.slx: Simulink implementation with a mocked PDS. Communicates with Pro-SiVIC using DDS.
-- run_from_file.m: Read a set of test scenarios from a csv-file and run them in Pro-SiVIC.
-- run_from_file_theory.m: Read a set of test scenarios from a csv-file and calculate what the .
+- `run_NSGAII.m`: Main file for running NSGA-II to search for test input representing critical scenarios.
+- `mock_pedestrian_detection_system.slx`: Simulink implementation with a mocked PDS. Communicates with Pro-SiVIC using DDS.
+- `run_from_file.m`: Read a set of test scenarios from a csv-file and run them in Pro-SiVIC.
+- `run_from_file_theory.m`: Read a set of test scenarios from a csv-file and calculate what the .
 
-The four subfolders contain the following:
-
+Furthermore, the four subfolders contain the following:
 - `genetic_algo`: A refactored version of the original algorithm NSGA-II tailored for generation of test cases representing critical test scenarios. NSGA-II was originally developed by the Kanpur Genetic Algorithm Labarotary http://www.iitk.ac.in/kangal/ We hope that the refactored version will be easier to understand for non-experts.
 - `scripts`: Two Pro-SiVIC scripts. First, the Pro-SiVIC scene that replicates the PreScan scene by Ben Abdessalem et al. (2016). Second, a script to turn on shadows for each body part of the Pro-SiVIC pedestrian.
 - `utils`: Three utility functions called by the main MATLAB scripts.
