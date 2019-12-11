@@ -5,10 +5,10 @@ The corresponding research article is currently in preparation (Dec 2019).
 
 The repository contains four main parts:
 
-- sbst_pedestrian_detection_system: An adaptation of the original NSGA-II algorithm for search-based testing in Pro-SiVIC.
-- utils: Various scripts that can be used to reproduce our results.
-- example_prosivic_matlab: Examples of DDS communication between Pro-SiVIC and MATLAB applications.
-- example_prosivic_simulink: An example of DDS communication between Pro-SiVIC and Simulink blocks.
+- `sbst_pedestrian_detection_system`: An adaptation of the original NSGA-II algorithm for search-based testing in Pro-SiVIC.
+- `utils`: Various scripts that can be used to reproduce our results.
+- `example_prosivic_matlab`: Examples of DDS communication between Pro-SiVIC and MATLAB applications.
+- `example_prosivic_simulink`: An example of DDS communication between Pro-SiVIC and Simulink blocks.
 
 ## sbst_pedestrian_detection_system
 This is the core component of the repository, demonstrating how NSGA-II can be used to generate critical test scenarios for a pedestrian detection system simulated using Pro-SiVIC. 
@@ -18,9 +18,9 @@ The pedestrian detection system (PDS) under test in the research publication is 
 
 ### Objective functions
 The implementation shows how NSGA-II can be for multi-objective optimization, in this case to generate test scenarios for the given scene that minimize three objective functions:
-1. the minimum distance between the pedestrian and the car (`min_dist`)
-1. the minimum time to collision (`min_ttc`)
-1. the minimum distance between the pedestrian and the *acute warning area* in front of the car (`min_dist_awa`)
+- OF1 = the minimum distance between the pedestrian and the car (`min_dist`)
+- OF2 = the minimum time to collision (`min_ttc`)
+- OF3 = the minimum distance between the pedestrian and the *acute warning area* in front of the car (`min_dist_awa`)
 
 Note that all objective functions are considered equally important. We refer to the result from optimizing the three objective functions as a *critical scenario*.
 
@@ -33,17 +33,23 @@ To test the pedestrian detection system, a simple scene has been implemented in 
 1. the speed of the pedestrian (`ped_speed`)
 1. the speed of the car (`car_speed`)
 
-
+### Source code structure
+The main files in the root folder are:
+- run_NSGAII.m: Main file for running NSGA-II to search for test input representing critical scenarios.
+- mock_pedestrian_detection_system.slx: Simulink implementation with a mocked PDS. Communicates with Pro-SiVIC using DDS.
+- run_from_file.m: Read a set of test scenarios from a csv-file and run them in Pro-SiVIC.
+- run_from_file_theory.m: Read a set of test scenarios from a csv-file and calculate what the .
 
 The four subfolders contain the following:
 
-- genetic_algo: A refactored version of the original algorithm NSGA-II tailored for generation of test cases representing critical test scenarios. NSGA-II was originally developed by the Kanpur Genetic Algorithm Labarotary http://www.iitk.ac.in/kangal/ We hope that the refactored version will be easier to understand for non-experts.
+- `genetic_algo`: A refactored version of the original algorithm NSGA-II tailored for generation of test cases representing critical test scenarios. NSGA-II was originally developed by the Kanpur Genetic Algorithm Labarotary http://www.iitk.ac.in/kangal/ We hope that the refactored version will be easier to understand for non-experts.
+- `scripts`: Two Pro-SiVIC scripts. First, the Pro-SiVIC scene that replicates the PreScan scene by Ben Abdessalem et al. (2016). Second, a script to turn on shadows for each body part of the Pro-SiVIC pedestrian.
+- `utils`: Three utility functions called by the main MATLAB scripts.
 
-Workaround to start DCPSInforRepo: DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242
+Workaround to start DCPSInforRepo: `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242`
 
-## utils
+## scripts
 Supporting scripts to reproduce our results. Instructions will follow when the paper manuscript has been finished.
-
 
 ## example_prosivic_matlab
 The code can be used to get started with DDS communication between Pro-SiVIC and MATLAB. The code is provided as is, but should be fairly straightforward even without documentation beyond code comments.
