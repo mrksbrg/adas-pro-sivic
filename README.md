@@ -38,14 +38,39 @@ The main files in the root folder are:
 - `run_NSGAII.m`: Main file for running NSGA-II to search for test input representing critical scenarios.
 - `mock_pedestrian_detection_system.slx`: Simulink implementation with a mocked PDS. Communicates with Pro-SiVIC using DDS.
 - `run_from_file.m`: Read a set of test scenarios from a csv-file and run them in Pro-SiVIC.
-- `run_from_file_theory.m`: Read a set of test scenarios from a csv-file and calculate what the .
+- `run_from_file_theory.m`: Read a set of test scenarios from a csv-file and calculate what `min_dist`should be assuming an ideal model.
+
+The supporting files are:
+- `config.json`: Contains a DDS configuration that must match the Pro-SiVIC installation.
+- `ProSiVIC_RemoteCommands.dll`: 
+- `ProSiVIC_DDS.mex`: Function that calls the corresponding C++ implementation 
+- `sendCommand.mex: Function that calls the corresponding C++ implementation
 
 Furthermore, the four subfolders contain the following:
 - `genetic_algo`: A refactored version of the original algorithm NSGA-II tailored for generation of test cases representing critical test scenarios. NSGA-II was originally developed by the Kanpur Genetic Algorithm Labarotary http://www.iitk.ac.in/kangal/ We hope that the refactored version will be easier to understand for non-experts.
 - `scripts`: Two Pro-SiVIC scripts. First, the Pro-SiVIC scene that replicates the PreScan scene by Ben Abdessalem et al. (2016). Second, a script to turn on shadows for each body part of the Pro-SiVIC pedestrian.
 - `utils`: Three utility functions called by the main MATLAB scripts.
 
-Workaround to start DCPSInforRepo: `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242`
+### Running NSGA-II with Pro-SiVIC
+Follow the steps below to reproduce our study on using NSGA-II with Pro-SiVIC for test case generation.
+
+#### Prerequisities
+- MATLAB installed. We used version X.
+- Pro-SiVIC with a license that enables level 2 sensors. We used version 2018.
+- Configure Pro-SiVIC to use TCP for DDS communication with Domain ID 15.
+
+#### Steps to reprocude our results
+1. Copy the file `scripts/prescan_repl_minimal.script` to the Pro-SiVIC folder used for loading scenes.
+1. Start Pro-SiVIC
+1. Start MATLAB.
+1. Set `adas-pro-sivic\sbst_pedestrian_detection_system` as the current folder in MATLAB.
+1. Run `run_NSGAII.m`
+
+#### Configuring NSGA-II
+The following variables are used to tune NSGA-II.
+
+#### Troubleshooting
+- Sometimes the background service DCPSInforRepo does not start properly with Pro-SiVIC. Try starting it manually from the bin folder in the Pro-SiVIC installation using the command `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242`
 
 ## scripts
 Supporting scripts to reproduce our results. Instructions will follow when the paper manuscript has been finished.
