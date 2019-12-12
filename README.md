@@ -27,7 +27,7 @@ Note that all objective functions are considered equally important. We refer to 
 ### Test input
 To test the pedestrian detection system, a simple scene has been implemented in Pro-SiVIC. The scene enables a replication of the solution presented by Ben Abdessalem et al. (2016) implemented in PreScan. The scene contains a car driving on a straight road and a pedestrian crossing the street from the right. There are no objects along the road, and the driving conditions are normal. Test scenarios are created for this scene by setting five independent test parameters within fixed ranges, i.e., the test input:
 
-1. the x coordinate of the pedestrian (`ped_x`) [
+1. the x coordinate of the pedestrian (`ped_x`)
 1. the y coordinate of the pedestrian (`ped_y`)
 1. the orientation of the pedestrian (`ped_orient`)
 1. the speed of the pedestrian (`ped_speed`)
@@ -91,6 +91,9 @@ The following variables are used to tune NSGA-II:
  - `nbr_mutations`: Number of mutations inserted after crossover.
  
  The following variables are used to set the input ranges for the Pro-SiVIC scene:
+- `[ped_x; ped_y; ped_orient; ped_speed; car_speed]`:
+- `min_ranges` = array of minimum values for `ped_x`, `ped_y`, `ped_orient`, `ped_speed`, `car_speed`, respectively.
+- `max_ranges` = array of maximum values for `ped_x`, `ped_y`, `ped_orient`, `ped_speed`, `car_speed`, respectively.
 
 #### Troubleshooting
 - Sometimes the background service DCPSInforRepo does not start properly with Pro-SiVIC. Try starting it manually from the bin folder in the Pro-SiVIC installation using the command `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242`
