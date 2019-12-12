@@ -91,7 +91,6 @@ The following variables are used to tune NSGA-II:
  - `nbr_mutations`: Number of mutations inserted after crossover.
  
  The following variables are used to set the input ranges for the Pro-SiVIC scene:
-- `[ped_x; ped_y; ped_orient; ped_speed; car_speed]`:
 - `min_ranges` = array of minimum values for `ped_x`, `ped_y`, `ped_orient`, `ped_speed`, `car_speed`, respectively.
 - `max_ranges` = array of maximum values for `ped_x`, `ped_y`, `ped_orient`, `ped_speed`, `car_speed`, respectively.
 
