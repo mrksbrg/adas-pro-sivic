@@ -33,6 +33,23 @@ To test the pedestrian detection system, a simple scene has been implemented in 
 1. the speed of the pedestrian (`ped_speed`)
 1. the speed of the car (`car_speed`)
 
+### NSGA-II with Pro-SiVIC
+In a nutshell, our implementation does the following:
+
+1. Randomly create an initial population (NSGA-II)
+1. Run simulations for the initial population (Pro-SiVIC)
+1. Evaluate the objective functions for the initial population (NSGA-II)
+1. Sort the initial population (NSGA-II)
+1. Select mates using tournament selection (NSGA-II)
+1. Perform crossover (NSGA-II)
+1. Insert mutations (NSGA-II)
+1. Run a simulation for child 1 (Pro-SiVIC)
+1. Evaluate the objective functions for child 1 (NSGA-II)
+1. Run a simulation for child 2 (Pro-SiVIC)
+1. Evaluate the objective functions for child 2 (NSGA-II)
+1. Select the best individuals based on elitism and crowding distance (NSGA-II)
+1. Write the results to file
+
 ### Source code structure
 The main files in the root folder are:
 - `run_NSGAII.m`: Main file for running NSGA-II to search for test input representing critical scenarios.
@@ -52,21 +69,7 @@ Furthermore, the four subfolders contain the following:
 - `utils`: Three utility functions called by the main MATLAB scripts.
 
 ### Running NSGA-II with Pro-SiVIC
-Follow the steps below to reproduce our study on using NSGA-II with Pro-SiVIC for test case generation. In a nutshell, our implementation does the following:
-
-1. Randomly create an initial population (NSGA-II)
-1. Run simulations for the initial population (Pro-SiVIC)
-1. Evaluate the objective functions for the initial population (NSGA-II)
-1. Sort the initial population (NSGA-II)
-1. Select mates using tournament selection (NSGA-II)
-1. Perform crossover (NSGA-II)
-1. Insert mutations (NSGA-II)
-1. Run a simulation for child 1 (Pro-SiVIC)
-1. Evaluate the objective functions for child 1 (NSGA-II)
-1. Run a simulation for child 2 (Pro-SiVIC)
-1. Evaluate the objective functions for child 2 (NSGA-II)
-1. Select the best individuals based on elitism and crowding distance (NSGA-II)
-1. Write the results to file
+Follow the steps int the sections below to reproduce our study on using NSGA-II with Pro-SiVIC for test case generation. 
 
 #### Prerequisities
 - MATLAB installed. We used version X.
@@ -86,6 +89,8 @@ The following variables are used to tune NSGA-II:
 - `time_budget`: Time budget allowed by NSGA-II to find solutions.
 - `population_size`: Size of the initial population. The same number of solutions will be identified.
  - `nbr_mutations`: Number of mutations inserted after crossover.
+ 
+ The following variables are used to set the input ranges for the Pro-SiVIC scene:
 
 #### Troubleshooting
 - Sometimes the background service DCPSInforRepo does not start properly with Pro-SiVIC. Try starting it manually from the bin folder in the Pro-SiVIC installation using the command `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242`
