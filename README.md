@@ -24,6 +24,10 @@ The implementation shows how NSGA-II can be for multi-objective optimization, in
 
 Note that all objective functions are considered equally important. We refer to the result from optimizing the three objective functions as a *critical scenario*.
 
+The function used to calculate OF3 ([calc_obj_funcs.m](https://github.com/mrksbrg/adas-pro-sivic/blob/master/sbst_pedestrian_detection_system/utils/calc_obj_funcs.m)) refers to three positions relative to the acute warning area as shown in the figure below.
+![AWA_positions](/awa_positions.png) <a name="awa_positions"></a>
+
+
 ### Test input
 To test the pedestrian detection system, a simple scene has been implemented in ESI Pro-SiVIC. The scene enables a replication of the solution presented by Ben Abdessalem et al. (2016) implemented in PreScan. The scene contains a car driving on a straight road and a pedestrian crossing the street from the right. There are no objects along the road, and the driving conditions are normal. Test scenarios are created for this scene by setting five independent test parameters within fixed ranges, i.e., the test input:
 
