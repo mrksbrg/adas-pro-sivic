@@ -76,7 +76,7 @@ Furthermore, the four subfolders contain the following:
 Follow the steps int the sections below to reproduce our study on using NSGA-II with ESI Pro-SiVIC for test case generation. 
 
 #### Prerequisities
-- MATLAB installed. We used version X.
+- MATLAB installed with the Computer Vision Toolbox. We used version R2019a.
 - ESI Pro-SiVIC with a license that enables level 2 sensors. We used version 2018.
 - Configure ESI Pro-SiVIC to use TCP for DDS communication with Domain ID 15.
 
