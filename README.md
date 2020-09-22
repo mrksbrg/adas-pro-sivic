@@ -99,7 +99,7 @@ The following variables are used to tune NSGA-II:
 - `max_ranges` = array of maximum values for `ped_x`, `ped_y`, `ped_orient`, `ped_speed`, `car_speed`, respectively.
 
 #### Troubleshooting
-- Sometimes the background service DCPSInforRepo does not start properly with ESI Pro-SiVIC. Try starting it manually from the bin folder in the ESI Pro-SiVIC installation using the command `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242` (replace the path to match the location of your local repo.ior)
+- Sometimes the background service DCPSInforRepo does not start properly with ESI Pro-SiVIC. Try starting it manually from the bin folder in the ESI Pro-SiVIC installation using the command `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242` (replace the path to match the location of your local repo.ior) Run the following command in MATLAB and verify in the Pro-SiVIC log that the command has been received: `ret=sendCommand('PLAY','localhost')`
 
 ## scripts
 Supporting scripts to reproduce our results. Instructions will follow when the paper manuscript has been finished.
