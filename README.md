@@ -76,7 +76,7 @@ Furthermore, the four subfolders contain the following:
 Follow the steps int the sections below to reproduce our study on using NSGA-II with ESI Pro-SiVIC for test case generation. 
 
 #### Prerequisities
-- MATLAB installed with the Computer Vision Toolbox. We used version R2019a.
+- MATLAB installed with the Computer Vision Toolbox and the DSP System Toolbox. We used version R2019a.
 - ESI Pro-SiVIC with a license that enables level 2 sensors. We used version 2018.
 - The contents of the AN_interface_MatlabSimulink.zip archive (available in the installation directory \ESI Group\Pro-SiVIC\2018.0.1\applicationNotes) must be extracted and added to the path in MATLAB.
 - Configure ESI Pro-SiVIC to use TCP for DDS communication with Domain ID 15. Probably UDP will work instead of TCP, and that might solve issues with DCPSInfoRepo (described below).
