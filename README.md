@@ -76,9 +76,10 @@ Furthermore, the four subfolders contain the following:
 Follow the steps int the sections below to reproduce our study on using NSGA-II with ESI Pro-SiVIC for test case generation. 
 
 #### Prerequisities
-- MATLAB installed. We used version X.
+- MATLAB installed with the Computer Vision Toolbox and the DSP System Toolbox. We used version R2019a.
 - ESI Pro-SiVIC with a license that enables level 2 sensors. We used version 2018.
-- Configure ESI Pro-SiVIC to use TCP for DDS communication with Domain ID 15.
+- The contents of the AN_interface_MatlabSimulink.zip archive (available in the installation directory \ESI Group\Pro-SiVIC\2018.0.1\applicationNotes) must be extracted and added to the path in MATLAB.
+- Configure ESI Pro-SiVIC to use TCP for DDS communication with Domain ID 15. Probably UDP will work instead of TCP, and that might solve issues with DCPSInfoRepo (described below).
 
 #### Steps to reprocude our results
 1. Copy the file `scripts/prescan_repl_minimal.script` to the ESI Pro-SiVIC folder used for loading scenes.
@@ -99,7 +100,7 @@ The following variables are used to tune NSGA-II:
 - `max_ranges` = array of maximum values for `ped_x`, `ped_y`, `ped_orient`, `ped_speed`, `car_speed`, respectively.
 
 #### Troubleshooting
-- Sometimes the background service DCPSInforRepo does not start properly with ESI Pro-SiVIC. Try starting it manually from the bin folder in the ESI Pro-SiVIC installation using the command `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242`
+- Sometimes the background service DCPSInforRepo does not start properly with ESI Pro-SiVIC. Try starting it manually from the bin folder in the ESI Pro-SiVIC installation using the command `DCPSInfoRepo -o f:/temp/repo.ior -ORBListenEndpoints iiop://:4242` (replace the path to match the location of your local repo.ior) Run the following command in MATLAB and verify in the Pro-SiVIC log that the command has been received: `ret=sendCommand('PLAY','localhost')`
 
 ## scripts
 Supporting scripts to reproduce our results. Instructions will follow when the paper manuscript has been finished.
