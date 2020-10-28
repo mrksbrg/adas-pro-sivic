@@ -1,4 +1,4 @@
-# adas-pro-sivic
+# Search-based Software Testing for ADAS in ESI Pro-SiVIC
 This repository contains source code for search-based software testing of a pedestrian detection system using the virtual prototyping platform ESI Pro-SiVIC. We hope that the example code provided can help future developers and researchers getting started with software testing using ESI Pro-SiVIC. The examples use Data Distribution Service (DDS) for communication between ESI Pro-SiVIC and MATLAB and Simulink, resepctively.
 
 The corresponding research article is currently in preparation (Dec 2019).
